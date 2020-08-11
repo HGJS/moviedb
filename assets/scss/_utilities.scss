@@ -1,0 +1,67 @@
+.bg-color-grey {
+	background-color: $color-grey-light;
+}
+
+.md-max-400 {
+	@include respond-max($md-max) {
+		display: block;
+		max-width: 400px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
+
+$i: 0;
+@while $i <= 120 {
+	//MARGIN
+	.mt {
+		&-#{$i} {
+			margin-top: #{$i}px;
+		}
+	}
+
+	.mr {
+		&-#{$i} {
+			margin-right: #{$i}px;
+		}
+	}
+
+	.mb {
+		&-#{$i} {
+			margin-bottom: #{$i}px;
+		}
+	}
+
+	.ml {
+		&-#{$i} {
+			margin-left: #{$i}px;
+		}
+	}
+
+	//PADDING
+	.pt {
+		&-#{$i} {
+			padding-top: #{$i}px;
+		}
+	}
+
+	.pr {
+		&-#{$i} {
+			padding-right: #{$i}px;
+		}
+	}
+
+	.pb {
+		&-#{$i} {
+			padding-bottom: #{$i}px;
+		}
+	}
+
+	.pl {
+		&-#{$i} {
+			padding-left: #{$i}px;
+		}
+	}
+
+	$i: $i + 5;
+}

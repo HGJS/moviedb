@@ -1,0 +1,27 @@
+<template>
+	<footer class="app-footer">
+		<div class="container-fluid app-container-fluid">
+			<p class="mb-15">
+				By
+				<a
+					href="https://www.linkedin.com/in/samhellewell/"
+					class="app-footer__link"
+					target="_blank"
+					rel="noopener"
+					>Sam Hellewell</a
+				>
+			</p>
+			<p class="mb-15">
+				This product uses the TMDb API but is not endorsed or certified
+				by TMDb.
+			</p>
+			<img
+				src="/tmdb-logo.svg"
+				alt="TMDb"
+				class="img-fluid app-footer__logo"
+				width="108"
+				height="14"
+			/>
+		</div>
+	</footer>
+</template>

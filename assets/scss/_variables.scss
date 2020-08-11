@@ -1,0 +1,43 @@
+$color-white: #fff;
+$color-black: #000;
+$color-blue-light: #c0e4e6;
+$color-blue-mid: #34acb2;
+$color-blue-mid-2: #2b8d96;
+$color-blue-dark: #34495e;
+$color-blue-dark-2: #2c3e50;
+$color-blue-black: #030f26;
+$color-grey-light: #f5f5f5;
+$color-grey-light-2: #888888;
+$color-grey-dark: #333;
+$color-red: #d93250;
+$color-purple: #732743;
+$color-pink: #f25757;
+
+//BREAKPOINTS
+$sm-max: 575px;
+$md-max: 767px;
+$lg-max: 991px;
+$xl-max: 1199px;
+
+$sm-min: 576px;
+$md-min: 768px;
+$lg-min: 992px;
+$xl-min: 1200px;
+
+@mixin respond-max($breakpoint-max) {
+	@media screen and (max-width: $breakpoint-max) {
+		@content;
+	}
+}
+
+@mixin respond-min($breakpoint-min) {
+	@media screen and (min-width: $breakpoint-min) {
+		@content;
+	}
+}
+
+@mixin respond-between($breakpoint-min, $breakpoint-max) {
+	@media screen and (min-width: $breakpoint-min) and (max-width: $breakpoint-mix) {
+		@content;
+	}
+}

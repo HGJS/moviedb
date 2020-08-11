@@ -1,0 +1,27 @@
+.items-slider {
+	position: relative;
+
+	&__wrap {
+		position: relative;
+		overflow: hidden;
+	}
+
+	&__inner {
+		margin-left: -15px;
+		margin-right: -15px;
+	}
+
+	&__button {
+		position: absolute;
+		top: calc(50% - 80px);
+		z-index: 2;
+	}
+
+	&__button--next {
+		right: 15px;
+	}
+
+	&__button--prev {
+		left: 15px;
+	}
+}

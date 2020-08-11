@@ -1,0 +1,26 @@
+.items {
+	&__row {
+		display: flex;
+		align-items: flex-start;
+		flex-wrap: nowrap;
+	}
+
+	&__title-col {
+		flex-grow: 1;
+	}
+
+	&__timeframe {
+		color: $color-blue-mid;
+		font-weight: 700;
+	}
+
+	@include respond-max($md-max) {
+		&__row {
+			flex-wrap: wrap;
+		}
+
+		&__title-col {
+			width: 100%;
+		}
+	}
+}

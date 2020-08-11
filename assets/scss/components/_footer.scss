@@ -1,0 +1,18 @@
+.app-footer {
+	background-color: $color-blue-black;
+	color: $color-white;
+	padding: 30px 0;
+	font-size: 14px;
+
+	&__link {
+		color: $color-white;
+		text-decoration: none;
+
+		&:hover,
+		&:active,
+		&:focus {
+			color: $color-blue-mid;
+			text-decoration: none;
+		}
+	}
+}
