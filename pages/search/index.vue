@@ -1,9 +1,13 @@
 <template>
 	<div class="pt-60 pb-60">
-		<div v-if="$fetchState.pending">
-			LOADING!!!
+		<div v-if="$fetchState.pending" class="pb-30">
+			<div class="container-fluid app-container-fluid">
+				<div class="loading-icon">
+					<span class="fas fa-circle-notch fa-spin"></span>
+				</div>
+			</div>
 		</div>
-		<div class="container-fluid app-container-fluid">
+		<div v-else class="container-fluid app-container-fluid">
 			<template v-if="searchTerms">
 				<h1 class="page-title">Search</h1>
 				<div class="mb-30">
@@ -52,12 +56,12 @@ export default {
 		const apiKey = 'f19c666067ae31ab26cb6225b464a8dc'
 		const encodedSearch = this.$route.query.q
 		const results = await this.$axios.get(
-			`/search/multi?api_key=${apiKey}&query=${encodedSearch}`
+			`/search/multi?api_key=${apiKey}&language=en-US&query=${encodedSearch}`
 		)
 		this.results = results.data.results
 	},
 	watch: {
-		'$route.query': '$fetch'
+		'$route.query.q': '$fetch'
 	},
 	components: {
 		'app-list-item': AppListItem

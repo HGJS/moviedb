@@ -6,19 +6,40 @@
 		}"
 		class="mb-30 list-item"
 	>
-		<nuxt-link
-			:to="`/${itemMediaLink}/${id}`"
-			class="list-item__link"
-			:class="{ 'list-item__link--person': this.mediaType == 'person' }"
-		>
-			<div class="list-item__link-image-wrap">
+		<template v-if="mediaType != 'youTube'">
+			<nuxt-link :to="`/${itemMediaLink}/${id}`" class="list-item__link">
+				<div class="list-item__link-image-wrap">
+					<img
+						:src="imagePath"
+						:alt="name"
+						class="list-item__link-image"
+					/>
+				</div>
+				<h3 class="list-item__link-title">{{ name }}</h3>
+				<p v-if="character" class="list-item__link-title">
+					{{ character }}
+				</p>
+			</nuxt-link>
+		</template>
+		<template v-else>
+			<a
+				:href="`https://www.youtube.com/watch?v=${id}`"
+				target="_blank"
+				rel="noopener"
+				class="list-item__link"
+			>
 				<div
-					class="list-item__link-image"
-					:style="`background-image:url('${imagePath}')`"
-				></div>
-			</div>
-			<h3 class="list-item__link-title">{{ name }}</h3>
-		</nuxt-link>
+					class="list-item__link-image-wrap list-item__link-image-wrap--landscape"
+				>
+					<img
+						:src="imagePath"
+						:alt="name"
+						class="list-item__link-image"
+					/>
+				</div>
+				<h3 class="list-item__link-title">{{ name }}</h3>
+			</a>
+		</template>
 	</div>
 </template>
 
@@ -30,10 +51,15 @@ export default {
 			required: true
 		},
 		name: {
-			type: String,
+			type: [String, undefined, null],
 			required: true
 		},
-		image: {},
+		character: {
+			type: String
+		},
+		image: {
+			type: [String, undefined, null]
+		},
 		mediaType: {
 			type: String,
 			required: true
@@ -50,7 +76,10 @@ export default {
 				}
 				return '/movie-tv-fallback.png'
 			}
-			return `https://image.tmdb.org/t/p/w342/${this.image}`
+			if (this.mediaType != 'youTube') {
+				return `https://image.tmdb.org/t/p/w1280/${this.image}`
+			}
+			return this.image
 		},
 		itemMediaLink() {
 			switch (this.mediaType) {

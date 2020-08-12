@@ -1,7 +1,9 @@
 <template>
 	<div>
 		<app-header />
-		<nuxt />
+		<transition name="fade" mode="out-in">
+			<nuxt />
+		</transition>
 		<app-footer />
 	</div>
 </template>

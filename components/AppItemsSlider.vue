@@ -1,15 +1,33 @@
 <template>
-	<div class="items-slider">
-		<div class="items-slider__wrap">
-			<div class="items-slider__inner">
-				<VueSlickCarousel v-bind="settings" ref="slider">
-					<slot></slot>
-				</VueSlickCarousel>
+	<no-ssr>
+		<div class="items-slider">
+			<div class="items-slider__wrap">
+				<div class="items-slider__inner">
+					<VueSlickCarousel
+						v-bind="settings"
+						ref="slider"
+						@reInit="checkControls"
+					>
+						<slot></slot>
+					</VueSlickCarousel>
+				</div>
+			</div>
+			<div v-if="showControls" class="items-slider__buttons-wrap">
+				<button
+					class="button items-slider__button items-slider__button--prev"
+					@click="showPrev"
+				>
+					<span class="fal fa-angle-left"></span>
+				</button>
+				<button
+					class="button items-slider__button items-slider__button--next"
+					@click="showNext"
+				>
+					<span class="fal fa-angle-right"></span>
+				</button>
 			</div>
 		</div>
-		<button @click="showPrev">Previous</button>
-		<button @click="showNext">Next</button>
-	</div>
+	</no-ssr>
 </template>
 
 <script>
@@ -17,12 +35,27 @@ import VueSlickCarousel from 'vue-slick-carousel'
 import 'vue-slick-carousel/dist/vue-slick-carousel.css'
 
 export default {
+	data() {
+		return {
+			showControls: false
+		}
+	},
 	props: {
 		settings: {
 			type: Object
 		}
 	},
 	methods: {
+		checkControls() {
+			const slider = this.$refs.slider
+			const slides = slider.$slots.default
+			const slidesToShow = slider.settings.slidesToShow
+			if (slides.length <= slidesToShow) {
+				this.showControls = false
+			} else {
+				this.showControls = true
+			}
+		},
 		showPrev() {
 			this.$refs.slider.prev()
 		},

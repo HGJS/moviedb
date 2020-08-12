@@ -32,46 +32,48 @@
 					</div>
 				</div>
 			</div>
-			<div v-show="$fetchState.pending">
+			<div v-if="$fetchState.pending">
 				<div class="loading-icon">
 					<span class="fas fa-circle-notch fa-spin"></span>
 				</div>
 			</div>
-			<div v-show="!$fetchState.pending">
-				<div v-show="timeframe == 'day'">
-					<app-items-slider :settings="sliderSettings">
-						<app-list-item
-							v-for="item in dailyList"
-							:key="item.id"
-							:id="item.id"
-							:image="item.poster_path || item.profile_path"
-							:name="
-								item.original_title ||
-									item.original_name ||
-									item.name
-							"
-							:mediaType="item.media_type"
-							:sliderItem="true"
-						/>
-					</app-items-slider>
-				</div>
-				<div v-show="timeframe == 'week'">
-					<app-items-slider :settings="sliderSettings">
-						<app-list-item
-							v-for="item in weeklyList"
-							:key="item.id"
-							:id="item.id"
-							:image="item.poster_path || item.profile_path"
-							:name="
-								item.original_title ||
-									item.original_name ||
-									item.name
-							"
-							:mediaType="item.media_type"
-							:sliderItem="true"
-						/>
-					</app-items-slider>
-				</div>
+			<div v-if="!$fetchState.pending">
+				<transition name="fade" mode="out-in">
+					<div v-if="timeframe == 'day'" key="dailySlider">
+						<app-items-slider :settings="sliderSettings">
+							<app-list-item
+								v-for="item in dailyList"
+								:key="item.id"
+								:id="item.id"
+								:image="item.poster_path || item.profile_path"
+								:name="
+									item.original_title ||
+										item.original_name ||
+										item.name
+								"
+								:mediaType="item.media_type"
+								:sliderItem="true"
+							/>
+						</app-items-slider>
+					</div>
+					<div v-if="timeframe == 'week'" key="weeklySlider">
+						<app-items-slider :settings="sliderSettings">
+							<app-list-item
+								v-for="item in weeklyList"
+								:key="item.id"
+								:id="item.id"
+								:image="item.poster_path || item.profile_path"
+								:name="
+									item.original_title ||
+										item.original_name ||
+										item.name
+								"
+								:mediaType="item.media_type"
+								:sliderItem="true"
+							/>
+						</app-items-slider>
+					</div>
+				</transition>
 			</div>
 		</div>
 	</section>
@@ -90,11 +92,18 @@ export default {
 				arrows: false,
 				slidesToShow: 4,
 				slidesToScroll: 1,
+				lazyLoad: 'ondemand',
 				responsive: [
 					{
 						breakpoint: 1024,
 						settings: {
 							slidesToShow: 3
+						}
+					},
+					{
+						breakpoint: 768,
+						settings: {
+							slidesToShow: 2
 						}
 					}
 				]
@@ -132,13 +141,13 @@ export default {
 		const apiKey = 'f19c666067ae31ab26cb6225b464a8dc'
 
 		const trendingDaily = await this.$axios
-			.get(`/trending/${this.type}/day?api_key=${apiKey}`)
+			.get(`/trending/${this.type}/day?api_key=${apiKey}&language=en-US`)
 			.catch(err => {
 				console.log(err)
 			})
 
 		const trendingWeekly = await this.$axios
-			.get(`/trending/${this.type}/week?api_key=${apiKey}`)
+			.get(`/trending/${this.type}/week?api_key=${apiKey}&language=en-US`)
 			.catch(err => {
 				console.log(err)
 			})

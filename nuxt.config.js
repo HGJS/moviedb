@@ -43,7 +43,11 @@ export default {
 	/*
 	 ** Plugins to load before mounting the App
 	 */
-	plugins: [],
+	plugins: [
+		{
+			src: '~/plugins/lightbox.client.js'
+		}
+	],
 	/*
 	 ** Nuxt.js dev-modules
 	 */

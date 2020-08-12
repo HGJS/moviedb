@@ -11,17 +11,15 @@
 		margin-right: -15px;
 	}
 
+	&__buttons-wrap {
+		display: flex;
+		justify-content: flex-end;
+		margin-bottom: 30px;
+	}
+
 	&__button {
-		position: absolute;
-		top: calc(50% - 80px);
-		z-index: 2;
-	}
-
-	&__button--next {
-		right: 15px;
-	}
-
-	&__button--prev {
-		left: 15px;
+		width: 40px;
+		height: 40px;
+		min-width: 0;
 	}
 }

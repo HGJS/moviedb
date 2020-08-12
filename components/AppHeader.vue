@@ -59,19 +59,21 @@
 				</div>
 			</div>
 		</div>
-		<div v-show="showSearch" class="app-header__search-form-wrap">
-			<div class="app-header__search-form-wrap-inner">
-				<div class="container-fluid  app-container-fluid">
-					<app-header-search-form
-						@processSearch="
-							{
-								showSearch = false
-							}
-						"
-					/>
+		<transition>
+			<div v-if="showSearch" class="app-header__search-form-wrap">
+				<div class="app-header__search-form-wrap-inner">
+					<div class="container-fluid  app-container-fluid">
+						<app-header-search-form
+							@processSearch="
+								{
+									showSearch = false
+								}
+							"
+						/>
+					</div>
 				</div>
 			</div>
-		</div>
+		</transition>
 	</header>
 </template>
 
