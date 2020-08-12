@@ -1,13 +1,13 @@
 <template>
 	<div class="pt-60 pb-60">
 		<div class="container-fluid app-container-fluid">
-			<h1 class="page-title">Movies</h1>
 			<div v-if="$fetchState.pending">
 				<div class="loading-icon">
 					<span class="fas fa-circle-notch fa-spin"></span>
 				</div>
 			</div>
 			<template v-else>
+				<h1 class="page-title">Movies</h1>
 				<div class="row">
 					<app-list-item
 						v-for="movie in movies"
@@ -18,14 +18,14 @@
 						mediaType="movie"
 					/>
 				</div>
-				<div class="row mt-30">
+				<div v-if="totalPages > 1" class="row mt-30">
 					<div v-if="currentPage != 1" class="app-col mr-auto">
 						<button class="button" @click="prevPage">
 							Previous
 						</button>
 					</div>
 					<div
-						v-if="currentPage != movies.total_pages"
+						v-if="currentPage != totalPages"
 						class="app-col ml-auto"
 					>
 						<button class="button" @click="nextPage">Next</button>
@@ -43,7 +43,7 @@ export default {
 	data() {
 		return {
 			movies: [],
-			totalPages: 0,
+			totalPages: 1,
 			currentPage: this.$route.query.page || 1,
 			hasError: false
 		}
@@ -59,7 +59,7 @@ export default {
 				this.hasError = true
 			})
 		this.movies = results.data.results
-		this.totalPage = results.data.total_pages
+		this.totalPages = results.data.total_pages
 	},
 	methods: {
 		prevPage() {

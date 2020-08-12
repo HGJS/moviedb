@@ -7,8 +7,14 @@
 		class="mb-30 list-item"
 	>
 		<template v-if="mediaType != 'youTube'">
-			<nuxt-link :to="`/${itemMediaLink}/${id}`" class="list-item__link">
-				<div class="list-item__link-image-wrap">
+			<nuxt-link :to="itemLink" class="list-item__link">
+				<div
+					class="list-item__link-image-wrap"
+					:class="{
+						'list-item__link-image-wrap--landscape':
+							orientation == 'landscape'
+					}"
+				>
 					<img
 						:src="imagePath"
 						:alt="name"
@@ -57,12 +63,21 @@ export default {
 		character: {
 			type: String
 		},
+		season: {
+			type: [String, Number]
+		},
+		episode: {
+			type: [String, Number]
+		},
 		image: {
 			type: [String, undefined, null]
 		},
 		mediaType: {
 			type: String,
 			required: true
+		},
+		orientation: {
+			type: String
 		},
 		sliderItem: {
 			type: Boolean
@@ -81,16 +96,22 @@ export default {
 			}
 			return this.image
 		},
-		itemMediaLink() {
+		itemLink() {
 			switch (this.mediaType) {
 				case 'movie':
-					return 'movies'
+					return `/movies/${this.id}`
 					break
 				case 'tv':
-					return 'tv'
+					return `/tv/${this.id}`
+					break
+				case 'tv-season':
+					return `/tv/${this.id}/${this.season}`
+					break
+				case 'tv-episode':
+					return `/tv/${this.id}/${this.season}/${this.episode}`
 					break
 				case 'person':
-					return 'people'
+					return `/people/${this.id}`
 					break
 			}
 		}

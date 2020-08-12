@@ -40,7 +40,7 @@
 			<div v-if="!$fetchState.pending">
 				<transition name="fade" mode="out-in">
 					<div v-if="timeframe == 'day'" key="dailySlider">
-						<app-items-slider :settings="sliderSettings">
+						<app-items-slider slideOrientation="portrait">
 							<app-list-item
 								v-for="item in dailyList"
 								:key="item.id"
@@ -57,7 +57,7 @@
 						</app-items-slider>
 					</div>
 					<div v-if="timeframe == 'week'" key="weeklySlider">
-						<app-items-slider :settings="sliderSettings">
+						<app-items-slider slideOrientation="portrait">
 							<app-list-item
 								v-for="item in weeklyList"
 								:key="item.id"
@@ -87,27 +87,7 @@ export default {
 		return {
 			dailyList: [],
 			weeklyList: [],
-			timeframe: 'day',
-			sliderSettings: {
-				arrows: false,
-				slidesToShow: 4,
-				slidesToScroll: 1,
-				lazyLoad: 'ondemand',
-				responsive: [
-					{
-						breakpoint: 1024,
-						settings: {
-							slidesToShow: 3
-						}
-					},
-					{
-						breakpoint: 768,
-						settings: {
-							slidesToShow: 2
-						}
-					}
-				]
-			}
+			timeframe: 'day'
 		}
 	},
 	props: {

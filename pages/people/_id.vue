@@ -30,22 +30,27 @@
 									{{ person.name }}
 								</h1>
 								<div class="page-banner__content-area">
-									<h2>Born</h2>
-									<p>
-										{{ person.birthday }}
-										<template v-if="person.place_of_birth">
-											<br />
-											{{ person.place_of_birth }}
-										</template>
-									</p>
+									<template v-if="person.birthday">
+										<h2>Born</h2>
+										<p>
+											{{ person.birthday }}
+											<template
+												v-if="person.place_of_birth"
+											>
+												<br />
+												{{ person.place_of_birth }}
+											</template>
+										</p>
+									</template>
 
 									<template v-if="person.deathday">
 										<h2>Died</h2>
 										<p>{{ person.deathday }}</p>
 									</template>
-
-									<h2>Biography</h2>
-									<p v-html="person.biography"></p>
+									<template v-if="person.biography">
+										<h2>Biography</h2>
+										<p v-html="person.biography"></p>
+									</template>
 								</div>
 							</div>
 						</div>
@@ -90,10 +95,13 @@
 
 					<transition name="fade" mode="out-in">
 						<div
-							v-if="creditType == 'movies' && personMovieCredits"
+							v-if="
+								creditType == 'movies' &&
+									personMovieCredits.length
+							"
 							key="movies"
 						>
-							<app-items-slider :settings="sliderSettings">
+							<app-items-slider slideOrientation="portrait">
 								<app-list-item
 									v-for="item in personMovieCredits"
 									:key="item.id"
@@ -113,10 +121,10 @@
 							</app-items-slider>
 						</div>
 						<div
-							v-if="creditType == 'tv' && personTVCredits"
+							v-if="creditType == 'tv' && personTVCredits.length"
 							key="tv"
 						>
-							<app-items-slider :settings="sliderSettings">
+							<app-items-slider slideOrientation="portrait">
 								<app-list-item
 									v-for="item in personTVCredits"
 									:key="item.id"
@@ -142,7 +150,7 @@
 			<div v-if="personImages.length" class="pt-60 pb-30 info-section">
 				<div class="container-fluid app-container-fluid">
 					<h2 class="section-title">Images</h2>
-					<app-items-slider :settings="sliderSettings">
+					<app-items-slider slideOrientation="portrait">
 						<app-images-slider-item
 							v-for="(image, index) in personImages"
 							:key="image.file_path"
@@ -156,14 +164,15 @@
 					</app-items-slider>
 				</div>
 			</div>
-			<no-ssr>
+			<client-only>
 				<app-light-box
+					v-if="personGalleryImages"
 					:media="personGalleryImages"
 					:showThumbs="false"
 					:showLightBox="false"
 					ref="imageGallery"
 				/>
-			</no-ssr>
+			</client-only>
 		</template>
 	</div>
 </template>
@@ -181,41 +190,12 @@ export default {
 			personGalleryImages: [],
 			personMovieCredits: [],
 			personTVCredits: [],
-			creditType: '',
-			sliderSettings: {
-				arrows: false,
-				slidesToShow: 4,
-				slidesToScroll: 1,
-				lazyLoad: 'ondemand',
-				responsive: [
-					{
-						breakpoint: 1024,
-						settings: {
-							slidesToShow: 3
-						}
-					},
-					{
-						breakpoint: 768,
-						settings: {
-							slidesToShow: 2
-						}
-					}
-				]
-			}
+			creditType: ''
 		}
 	},
 	methods: {
 		openImageGallery(index) {
 			this.$refs.imageGallery.showImage(index)
-		}
-	},
-	mounted() {
-		if (this.personMovieCredits) {
-			this.creditType = 'movies'
-		} else if (this.personTVCredits) {
-			this.creditType = 'tv'
-		} else {
-			this.creditType = ''
 		}
 	},
 	async fetch() {
@@ -238,13 +218,23 @@ export default {
 				src: `https://image.tmdb.org/t/p/w1280/${image.file_path}`
 			})
 		}
+
+		if (this.personMovieCredits.length) {
+			this.creditType = 'movies'
+		} else if (this.personTVCredits.length) {
+			this.creditType = 'tv'
+		} else {
+			this.creditType = ''
+		}
 	},
 	validate({ params }) {
 		return /^\d+$/.test(params.id)
 	},
 	head() {
 		return {
-			title: `${this.person.name} - MovieDB`
+			title: this.person.name
+				? `${this.person.name} - MovieDB`
+				: 'MovieDB'
 		}
 	},
 	components: {
