@@ -7,6 +7,19 @@
 				</div>
 			</div>
 		</div>
+		<div v-else-if="$fetchState.error">
+			<div class="pt-60 pb-60">
+				<div class="container-fluid app-container-fluid">
+					<h1 class="page-title">Error</h1>
+					<div class="content-area">
+						<p class="mb-30">
+							There was an error fetching content.
+						</p>
+						<nuxt-link class="button" to="/">Home</nuxt-link>
+					</div>
+				</div>
+			</div>
+		</div>
 		<template v-else>
 			<div class="page-banner">
 				<div class="page-banner__background"></div>
@@ -59,7 +72,7 @@
 			</div>
 
 			<div
-				v-if="personMovieCredits.length || personTVCredits.length"
+				v-if="person.movieCredits.length || person.tvCredits.length"
 				class="pt-60 pb-30 info-section"
 			>
 				<div class="container-fluid app-container-fluid">
@@ -72,7 +85,7 @@
 						<div class="app-col items__controls-col mb-30">
 							<div class="d-flex">
 								<button
-									v-if="personMovieCredits.length"
+									v-if="person.movieCredits.length"
 									:class="{ active: creditType == 'movies' }"
 									@click="creditType = 'movies'"
 									class="button"
@@ -80,7 +93,7 @@
 									Movies
 								</button>
 								<button
-									v-if="personTVCredits.length"
+									v-if="person.tvCredits.length"
 									:class="{
 										active: creditType == 'tv'
 									}"
@@ -97,13 +110,13 @@
 						<div
 							v-if="
 								creditType == 'movies' &&
-									personMovieCredits.length
+									person.movieCredits.length
 							"
 							key="movies"
 						>
 							<app-items-slider slideOrientation="portrait">
 								<app-list-item
-									v-for="item in personMovieCredits"
+									v-for="item in person.movieCredits"
 									:key="item.id"
 									:id="item.id"
 									:image="
@@ -117,16 +130,17 @@
 									:character="item.character"
 									mediaType="movie"
 									:sliderItem="true"
+									orientation="portrait"
 								/>
 							</app-items-slider>
 						</div>
 						<div
-							v-if="creditType == 'tv' && personTVCredits.length"
+							v-if="creditType == 'tv' && person.tvCredits.length"
 							key="tv"
 						>
 							<app-items-slider slideOrientation="portrait">
 								<app-list-item
-									v-for="item in personTVCredits"
+									v-for="item in person.tvCredits"
 									:key="item.id"
 									:id="item.id"
 									:image="
@@ -140,6 +154,7 @@
 									:character="item.character"
 									mediaType="tv"
 									:sliderItem="true"
+									orientation="portrait"
 								/>
 							</app-items-slider>
 						</div>
@@ -147,15 +162,15 @@
 				</div>
 			</div>
 
-			<div v-if="personImages.length" class="pt-60 pb-30 info-section">
+			<div v-if="person.images.length" class="pt-60 pb-30 info-section">
 				<div class="container-fluid app-container-fluid">
 					<h2 class="section-title">Images</h2>
 					<app-items-slider slideOrientation="portrait">
 						<app-images-slider-item
-							v-for="(image, index) in personImages"
+							v-for="(image, index) in person.images"
 							:key="image.file_path"
 							:image="
-								`https://image.tmdb.org/t/p/w1280/${image.file_path}`
+								`https://image.tmdb.org/t/p/w780/${image.file_path}`
 							"
 							@click="openImageGallery(index)"
 							orientation="portrait"
@@ -166,8 +181,8 @@
 			</div>
 			<client-only>
 				<app-light-box
-					v-if="personGalleryImages"
-					:media="personGalleryImages"
+					v-if="person.galleryImages"
+					:media="person.galleryImages"
 					:showThumbs="false"
 					:showLightBox="false"
 					ref="imageGallery"
@@ -186,10 +201,6 @@ export default {
 	data() {
 		return {
 			person: [],
-			personImages: [],
-			personGalleryImages: [],
-			personMovieCredits: [],
-			personTVCredits: [],
 			creditType: ''
 		}
 	},
@@ -209,19 +220,20 @@ export default {
 			})
 
 		this.person = person.data
-		this.personImages = person.data.images.profiles
-		this.personMovieCredits = person.data.movie_credits.cast.splice(0, 20)
-		this.personTVCredits = person.data.tv_credits.cast.splice(0, 20)
+		this.person.images = person.data.images.profiles
+		this.person.movieCredits = person.data.movie_credits.cast.splice(0, 20)
+		this.person.tvCredits = person.data.tv_credits.cast.splice(0, 20)
+		this.person.galleryImages = []
 
-		for (const image of this.personImages) {
-			this.personGalleryImages.push({
-				src: `https://image.tmdb.org/t/p/w1280/${image.file_path}`
+		for (const image of this.person.images) {
+			this.person.galleryImages.push({
+				src: `https://image.tmdb.org/t/p/w780/${image.file_path}`
 			})
 		}
 
-		if (this.personMovieCredits.length) {
+		if (this.person.movieCredits.length) {
 			this.creditType = 'movies'
-		} else if (this.personTVCredits.length) {
+		} else if (this.person.tvCredits.length) {
 			this.creditType = 'tv'
 		} else {
 			this.creditType = ''

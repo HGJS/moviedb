@@ -53,6 +53,7 @@
 								"
 								:mediaType="item.media_type"
 								:sliderItem="true"
+								orientation="portrait"
 							/>
 						</app-items-slider>
 					</div>
@@ -70,6 +71,7 @@
 								"
 								:mediaType="item.media_type"
 								:sliderItem="true"
+								orientation="portrait"
 							/>
 						</app-items-slider>
 					</div>

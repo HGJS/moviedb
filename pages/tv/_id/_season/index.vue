@@ -7,6 +7,19 @@
 				</div>
 			</div>
 		</div>
+		<div v-else-if="$fetchState.error">
+			<div class="pt-60 pb-60">
+				<div class="container-fluid app-container-fluid">
+					<h1 class="page-title">Error</h1>
+					<div class="content-area">
+						<p class="mb-30">
+							There was an error fetching content.
+						</p>
+						<nuxt-link class="button" to="/">Home</nuxt-link>
+					</div>
+				</div>
+			</div>
+		</div>
 		<template v-else>
 			<div class="page-banner">
 				<div
@@ -42,13 +55,13 @@
 
 			<div
 				class="pt-60 pb-30  info-section"
-				v-if="seasonEpisodes.length > 0"
+				v-if="season.episodes.length > 0"
 			>
 				<div class="container-fluid app-container-fluid">
 					<h2 class="section-title">Episodes</h2>
 					<app-items-slider slideOrientation="landscape">
 						<app-list-item
-							v-for="item in seasonEpisodes"
+							v-for="item in season.episodes"
 							:key="item.id"
 							:id="show.id"
 							:image="
@@ -83,8 +96,7 @@ export default {
 	data() {
 		return {
 			show: [],
-			season: [],
-			seasonEpisodes: []
+			season: []
 		}
 	},
 	async fetch() {
@@ -107,7 +119,7 @@ export default {
 			})
 
 		this.season = season.data
-		this.seasonEpisodes = season.data.episodes
+		this.season.episodes = season.data.episodes
 		this.show = show.data
 	},
 	validate({ params }) {

@@ -31,6 +31,7 @@
 								result.name
 						"
 						:mediaType="result.media_type"
+						orientation="portrait"
 					/>
 				</div>
 

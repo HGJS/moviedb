@@ -16,6 +16,7 @@
 						:image="person.profile_path"
 						:name="person.name"
 						mediaType="person"
+						orientation="portrait"
 					/>
 				</div>
 				<div class="row mt-30">
@@ -60,7 +61,6 @@ export default {
 			})
 		this.people = results.data.results
 		this.totalPages = results.data.total_pages
-		console.log(this.$route)
 	},
 	methods: {
 		prevPage() {

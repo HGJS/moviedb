@@ -2,12 +2,6 @@
 	<div class="pt-60">
 		<div class="container-fluid app-container-fluid">
 			<h1 class="page-title">Movie Database</h1>
-			<!-- <div class="content-area mb-30">
-				<p>
-					Lorem ipsum dolor sit amet consectetur adipisicing elit.
-					Laudantium mollitia adipisci blanditiis.
-				</p>
-			</div> -->
 		</div>
 
 		<app-trending-items type="movie" class="pb-30" />

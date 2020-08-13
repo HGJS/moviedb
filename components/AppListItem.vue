@@ -29,7 +29,7 @@
 		</template>
 		<template v-else>
 			<a
-				:href="`https://www.youtube.com/watch?v=${id}`"
+				:href="`https://www.youtube.com/watch?v=${videoKey}`"
 				target="_blank"
 				rel="noopener"
 				class="list-item__link"
@@ -56,6 +56,9 @@ export default {
 			type: [String, Number],
 			required: true
 		},
+		videoKey: {
+			type: [String, Number]
+		},
 		name: {
 			type: [String, undefined, null],
 			required: true
@@ -76,6 +79,9 @@ export default {
 			type: String,
 			required: true
 		},
+		showVideoFallback: {
+			type: [Boolean, null, undefined]
+		},
 		orientation: {
 			type: String
 		},
@@ -85,15 +91,34 @@ export default {
 	},
 	computed: {
 		imagePath() {
-			if (!this.image) {
-				if (this.mediaType == 'person') {
-					return '/person-fallback.png'
+			if (this.mediaType == 'youTube' && this.showVideoFallback) {
+				return `/video-fallback-landscape.png`
+			}
+
+			if (this.orientation == 'portrait') {
+				if (!this.image) {
+					if (this.mediaType == 'person') {
+						return '/person-fallback.png'
+					}
+					return '/movie-tv-fallback.png'
 				}
-				return '/movie-tv-fallback.png'
+				if (this.mediaType != 'youTube') {
+					return `https://image.tmdb.org/t/p/w780/${this.image}`
+				}
 			}
-			if (this.mediaType != 'youTube') {
-				return `https://image.tmdb.org/t/p/w1280/${this.image}`
+
+			if (this.orientation == 'landscape') {
+				if (!this.image) {
+					if (this.mediaType == 'person') {
+						return '/person-fallback-landscape.png'
+					}
+					return '/movie-tv-fallback-landscape.png'
+				}
+				if (this.mediaType != 'youTube') {
+					return `https://image.tmdb.org/t/p/w1280/${this.image}`
+				}
 			}
+
 			return this.image
 		},
 		itemLink() {

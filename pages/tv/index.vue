@@ -16,6 +16,7 @@
 						:image="show.poster_path"
 						:name="show.original_name"
 						mediaType="tv"
+						orientation="portrait"
 					/>
 				</div>
 				<div class="row mt-30">

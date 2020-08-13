@@ -7,6 +7,19 @@
 				</div>
 			</div>
 		</div>
+		<div v-else-if="$fetchState.error">
+			<div class="pt-60 pb-60">
+				<div class="container-fluid app-container-fluid">
+					<h1 class="page-title">Error</h1>
+					<div class="content-area">
+						<p class="mb-30">
+							There was an error fetching content.
+						</p>
+						<nuxt-link class="button" to="/">Home</nuxt-link>
+					</div>
+				</div>
+			</div>
+		</div>
 		<template v-else>
 			<div class="page-banner">
 				<div
@@ -44,7 +57,8 @@
 										<span class="page-banner__rating-box">{{
 											movie.vote_average
 										}}</span>
-										based on {{ movie.vote_count }} reviews
+										based on
+										{{ movie.vote_count }} reviews
 									</p>
 								</div>
 								<div class="row">
@@ -79,7 +93,7 @@
 			</div>
 
 			<div
-				v-if="moviePosters.length || movieBackdrops.length"
+				v-if="movie.posters.length || movie.backdrops.length"
 				class="pt-60 pb-30 info-section"
 			>
 				<div class="container-fluid app-container-fluid">
@@ -92,15 +106,17 @@
 						<div class="app-col items__controls-col mb-30">
 							<div class="d-flex">
 								<button
-									v-if="moviePosters.length"
-									:class="{ active: imageTypes == 'posters' }"
+									v-if="movie.posters.length"
+									:class="{
+										active: imageTypes == 'posters'
+									}"
 									@click="imageTypes = 'posters'"
 									class="button"
 								>
 									Posters
 								</button>
 								<button
-									v-if="movieBackdrops.length"
+									v-if="movie.backdrops.length"
 									:class="{
 										active: imageTypes == 'backdrops'
 									}"
@@ -117,14 +133,14 @@
 						<div
 							v-if="
 								imageTypes == 'posters' &&
-									movieImages.posters.length
+									movie.images.posters.length
 							"
 							key="posters"
 						>
 							<app-items-slider slideOrientation="portrait">
 								<app-images-slider-item
-									v-for="(image,
-									index) in movieImages.posters"
+									v-for="(image, index) in movie.images
+										.posters"
 									:key="image.file_path"
 									:image="
 										`https://image.tmdb.org/t/p/w780/${image.file_path}`
@@ -142,14 +158,14 @@
 						<div
 							v-if="
 								imageTypes == 'backdrops' &&
-									movieImages.backdrops.length
+									movie.images.backdrops.length
 							"
 							key="backdrops"
 						>
 							<app-items-slider slideOrientation="landscape">
 								<app-images-slider-item
-									v-for="(image,
-									index) in movieImages.backdrops"
+									v-for="(image, index) in movie.images
+										.backdrops"
 									:key="image.file_path"
 									:image="
 										`https://image.tmdb.org/t/p/w1280/${image.file_path}`
@@ -167,30 +183,36 @@
 					</transition>
 				</div>
 			</div>
-			<!-- <div v-if="movieVideos.length" class="pt-60 pb-30 info-section">
+
+			<div
+				v-if="movie.videosList.length"
+				class="pt-60 pb-30 info-section"
+			>
 				<div class="container-fluid app-container-fluid">
 					<h2 class="section-title">Videos</h2>
-					<app-items-slider  slideOrientation="landscape">
+					<app-items-slider slideOrientation="landscape">
 						<app-list-item
-							v-for="item in movieVideos"
+							v-for="item in movie.videosList"
 							:key="item.id"
 							:id="item.id"
+							:videoKey="item.videoKey"
 							:image="item.image"
 							:name="item.name"
 							mediaType="youTube"
 							:sliderItem="true"
 							orientation="landscape"
+							:showVideoFallback="showVideoFallback"
 						/>
 					</app-items-slider>
 				</div>
-			</div> -->
-			<!--CAST-->
-			<div v-if="movieCast.length" class="pt-60 pb-30 info-section">
+			</div>
+
+			<div v-if="movie.cast.length" class="pt-60 pb-30 info-section">
 				<div class="container-fluid app-container-fluid">
 					<h2 class="section-title">Cast</h2>
 					<app-items-slider slideOrientation="portrait">
 						<app-list-item
-							v-for="item in movieCast"
+							v-for="item in movie.cast"
 							:key="item.id"
 							:id="item.id"
 							:image="item.profile_path"
@@ -198,21 +220,17 @@
 							:character="item.character"
 							mediaType="person"
 							:sliderItem="true"
+							orientation="portrait"
 						/>
 					</app-items-slider>
 				</div>
 			</div>
-
-			<!--SIMILAR-->
-			<div
-				class="pt-60 pb-30  info-section"
-				v-if="movieSimilar.total_results > 0"
-			>
+			<div class="pt-60 pb-30  info-section" v-if="movie.similar.length">
 				<div class="container-fluid app-container-fluid">
 					<h2 class="section-title">Similar</h2>
 					<app-items-slider slideOrientation="portrait">
 						<app-list-item
-							v-for="item in movieSimilar.results"
+							v-for="item in movie.similar"
 							:key="item.id"
 							:id="item.id"
 							:image="item.poster_path || item.profile_path"
@@ -223,24 +241,25 @@
 							"
 							mediaType="movie"
 							:sliderItem="true"
+							orientation="portrait"
 						/>
 					</app-items-slider>
 				</div>
 			</div>
 			<client-only>
 				<app-light-box
-					:media="moviePosters"
+					:media="movie.posters"
 					:showThumbs="false"
 					:showLightBox="false"
 					ref="posterGallery"
-					v-if="moviePosters.length"
+					v-if="movie.posters.length"
 				/>
 				<app-light-box
-					:media="movieBackdrops"
+					:media="movie.backdrops"
 					:showThumbs="false"
 					:showLightBox="false"
 					ref="backdropGallery"
-					v-if="movieBackdrops.length"
+					v-if="movie.backdrops.length"
 				/>
 			</client-only>
 		</template>
@@ -256,13 +275,7 @@ export default {
 	data() {
 		return {
 			movie: [],
-			movieImages: [],
-			movieVideos: [],
-			movieCast: [],
-			movieCrew: [],
-			movieSimilar: [],
-			moviePosters: [],
-			movieBackdrops: [],
+			showVideoFallback: false,
 			imageTypes: 'posters'
 		}
 	},
@@ -278,58 +291,77 @@ export default {
 			})
 
 		this.movie = movie.data
-		this.movieImages = movie.data.images
-		this.movieCast = movie.data.credits.cast.splice(0, 20)
-		this.movieCrew = movie.data.credits.crew.splice(0, 20)
-		this.movieSimilar = movie.data.similar
+		this.movie.images = movie.data.images
+		this.movie.cast = movie.data.credits.cast.splice(0, 20)
+		this.movie.similar = movie.data.similar.results
+		this.movie.backdrops = []
+		this.movie.posters = []
+		this.movie.videosList = []
 
-		for (const image of this.movieImages.backdrops) {
-			this.movieBackdrops.push({
+		for (const image of this.movie.images.backdrops) {
+			this.movie.backdrops.push({
 				src: `https://image.tmdb.org/t/p/w1280/${image.file_path}`
 			})
 		}
 
-		for (const image of this.movieImages.posters) {
-			this.moviePosters.push({
+		for (const image of this.movie.images.posters) {
+			this.movie.posters.push({
 				src: `https://image.tmdb.org/t/p/w780/${image.file_path}`
 			})
 		}
 
-		// if (movie.data.videos.results.length) {
-		// 	for (const video of movie.data.videos.results) {
-		// 		if (video.site == 'YouTube' && video.type != 'Bloopers') {
-		// 			const youTubeVideo = await this.$axios
-		// 				.get(
-		// 					`https://www.googleapis.com/youtube/v3/videos?key=${youTubeApiKey}&part=snippet&id=${video.key}`
-		// 				)
-		// 				.catch(err => {
-		// 					console.log(err)
-		// 				})
-		// 			function getThumbnail() {
-		// 				const thumbnailsObject =
-		// 					youTubeVideo.data.items[0].snippet.thumbnails
-		// 				const sortedThumbnails = Object.keys(
-		// 					thumbnailsObject
-		// 				).sort(function(a, b) {
-		// 					return (
-		// 						thumbnailsObject[b].width -
-		// 						thumbnailsObject[a].width
-		// 					)
-		// 				})
+		if (movie.data.videos.results.length) {
+			const videoKeys = []
+			for (const video of movie.data.videos.results) {
+				if (video.site == 'YouTube' && video.type != 'Bloopers') {
+					videoKeys.push(video.key)
+				}
+			}
 
-		// 				const thumbnailSize = sortedThumbnails[0]
+			const youTubeVideos = await this.$axios
+				.get(
+					`https://www.googleapis.com/youtube/v3/videos?key=${youTubeApiKey}&part=snippet&id=${videoKeys.join()}`
+				)
+				.catch(err => {
+					console.log(err)
+					this.showVideoFallback = true
+				})
 
-		// 				return thumbnailsObject[thumbnailSize].url
-		// 			}
-		// 			this.movieVideos.push({
-		// 				id: youTubeVideo.data.items[0].id,
-		// 				name:
-		// 					youTubeVideo.data.items[0].snippet.localized.title,
-		// 				image: getThumbnail()
-		// 			})
-		// 		}
-		// 	}
-		// }
+			if (!this.showVideoFallback) {
+				for (const video of youTubeVideos.data.items) {
+					function getThumbnail() {
+						const thumbnailsObject = video.snippet.thumbnails
+						const sortedThumbnails = Object.keys(
+							thumbnailsObject
+						).sort(function(a, b) {
+							return (
+								thumbnailsObject[b].width -
+								thumbnailsObject[a].width
+							)
+						})
+
+						const thumbnailSize = sortedThumbnails[0]
+
+						return thumbnailsObject[thumbnailSize].url
+					}
+					this.movie.videosList.push({
+						id: video.id,
+						videoKey: video.id,
+						name: video.snippet.title,
+						image: getThumbnail()
+					})
+				}
+			} else {
+				for (const video of this.movie.videos.results) {
+					this.movie.videosList.push({
+						id: video.id,
+						videoKey: video.key,
+						name: video.name,
+						image: ''
+					})
+				}
+			}
+		}
 	},
 	methods: {
 		getRuntime(time) {

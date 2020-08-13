@@ -7,6 +7,19 @@
 				</div>
 			</div>
 		</div>
+		<div v-else-if="$fetchState.error">
+			<div class="pt-60 pb-60">
+				<div class="container-fluid app-container-fluid">
+					<h1 class="page-title">Error</h1>
+					<div class="content-area">
+						<p class="mb-30">
+							There was an error fetching content.
+						</p>
+						<nuxt-link class="button" to="/">Home</nuxt-link>
+					</div>
+				</div>
+			</div>
+		</div>
 		<template v-else>
 			<div class="page-banner">
 				<div
@@ -66,17 +79,17 @@
 				</div>
 			</div>
 
-			<div v-if="episodeImages.length" class="pt-60 pb-30 info-section">
+			<div v-if="episode.images.length" class="pt-60 pb-30 info-section">
 				<div class="container-fluid app-container-fluid">
 					<h2 class="section-title">
 						Images
 					</h2>
 					<app-items-slider slideOrientation="landscape">
 						<app-images-slider-item
-							v-for="(image, index) in episodeImages"
+							v-for="(image, index) in episode.images"
 							:key="image.file_path"
 							:image="
-								`https://image.tmdb.org/t/p/w780/${image.file_path}`
+								`https://image.tmdb.org/t/p/w1280/${image.file_path}`
 							"
 							@click="openEpisodeGallery(index)"
 							orientation="landscape"
@@ -87,12 +100,12 @@
 			</div>
 
 			<!--CAST-->
-			<div v-if="episodeCast.length" class="pt-60 pb-30 info-section">
+			<div v-if="episode.cast.length" class="pt-60 pb-30 info-section">
 				<div class="container-fluid app-container-fluid">
 					<h2 class="section-title">Cast</h2>
 					<app-items-slider slideOrientation="portrait">
 						<app-list-item
-							v-for="item in episodeCast"
+							v-for="item in episode.cast"
 							:key="item.id"
 							:id="item.id"
 							:image="item.profile_path"
@@ -100,6 +113,7 @@
 							:character="item.character"
 							mediaType="person"
 							:sliderItem="true"
+							orientation="portrait"
 						/>
 					</app-items-slider>
 				</div>
@@ -107,14 +121,14 @@
 
 			<!--GUEST STARS-->
 			<div
-				v-if="episodeGuestStars.length"
+				v-if="episode.guestStars.length"
 				class="pt-60 pb-30 info-section"
 			>
 				<div class="container-fluid app-container-fluid">
 					<h2 class="section-title">Guest Stars</h2>
 					<app-items-slider slideOrientation="portrait">
 						<app-list-item
-							v-for="item in episodeGuestStars"
+							v-for="item in episode.guestStars"
 							:key="item.id"
 							:id="item.id"
 							:image="item.profile_path"
@@ -122,6 +136,7 @@
 							:character="item.character"
 							mediaType="person"
 							:sliderItem="true"
+							orientation="portrait"
 						/>
 					</app-items-slider>
 				</div>
@@ -159,11 +174,11 @@
 			</div>
 			<client-only>
 				<app-light-box
-					:media="episodeGallery"
+					:media="episode.gallery"
 					:showThumbs="false"
 					:showLightBox="false"
 					ref="episodeGallery"
-					v-if="episodeGallery.length"
+					v-if="episode.gallery.length"
 				/>
 			</client-only>
 		</template>
@@ -181,10 +196,6 @@ export default {
 			show: [],
 			season: [],
 			episode: [],
-			episodeCast: [],
-			episodeGuestStars: [],
-			episodeImages: [],
-			episodeGallery: [],
 			otherEpisodes: []
 		}
 	},
@@ -218,12 +229,13 @@ export default {
 		this.season = season.data
 		this.show = show.data
 		this.episode = episode.data
-		this.episodeImages = episode.data.images.stills
-		this.episodeCast = episode.data.credits.cast.splice(0, 20)
-		this.episodeGuestStars = episode.data.credits.guest_stars.splice(0, 20)
+		this.episode.images = episode.data.images.stills
+		this.episode.cast = episode.data.credits.cast.splice(0, 20)
+		this.episode.guestStars = episode.data.credits.guest_stars.splice(0, 20)
+		this.episode.gallery = []
 
-		for (const image of this.episodeImages) {
-			this.episodeGallery.push({
+		for (const image of this.episode.images) {
+			this.episode.gallery.push({
 				src: `https://image.tmdb.org/t/p/w1280/${image.file_path}`
 			})
 		}

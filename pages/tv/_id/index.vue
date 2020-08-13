@@ -7,6 +7,19 @@
 				</div>
 			</div>
 		</div>
+		<div v-else-if="$fetchState.error">
+			<div class="pt-60 pb-60">
+				<div class="container-fluid app-container-fluid">
+					<h1 class="page-title">Error</h1>
+					<div class="content-area">
+						<p class="mb-30">
+							There was an error fetching content.
+						</p>
+						<nuxt-link class="button" to="/">Home</nuxt-link>
+					</div>
+				</div>
+			</div>
+		</div>
 		<template v-else>
 			<div class="page-banner">
 				<div
@@ -78,12 +91,12 @@
 				</div>
 			</div>
 
-			<div v-if="showSeasons" class="pt-60 pb-30 info-section">
+			<div v-if="show.seasons.length" class="pt-60 pb-30 info-section">
 				<div class="container-fluid app-container-fluid">
 					<h2 class="section-title">Seasons</h2>
 					<app-items-slider slideOrientation="portrait">
 						<app-list-item
-							v-for="item in showSeasons"
+							v-for="item in show.seasons"
 							:key="item.id"
 							:id="show.id"
 							:image="item.poster_path || item.profile_path"
@@ -95,13 +108,14 @@
 							:season="item.season_number"
 							mediaType="tv-season"
 							:sliderItem="true"
+							orientation="portrait"
 						/>
 					</app-items-slider>
 				</div>
 			</div>
 
 			<div
-				v-if="showPosters.length || showBackdrops.length"
+				v-if="show.posters.length || show.backdrops.length"
 				class="pt-60 pb-30 info-section"
 			>
 				<div class="container-fluid app-container-fluid">
@@ -114,7 +128,7 @@
 						<div class="app-col items__controls-col mb-30">
 							<div class="d-flex">
 								<button
-									v-if="showPosters.length"
+									v-if="show.posters.length"
 									:class="{ active: imageTypes == 'posters' }"
 									@click="imageTypes = 'posters'"
 									class="button"
@@ -122,7 +136,7 @@
 									Posters
 								</button>
 								<button
-									v-if="showBackdrops.length"
+									v-if="show.backdrops.length"
 									:class="{
 										active: imageTypes == 'backdrops'
 									}"
@@ -139,13 +153,14 @@
 						<div
 							v-if="
 								imageTypes == 'posters' &&
-									showImages.posters.length
+									show.images.posters.length
 							"
 							key="posters"
 						>
 							<app-items-slider slideOrientation="portrait">
 								<app-images-slider-item
-									v-for="(image, index) in showImages.posters"
+									v-for="(image, index) in show.images
+										.posters"
 									:key="image.file_path"
 									:image="
 										`https://image.tmdb.org/t/p/w780/${image.file_path}`
@@ -163,14 +178,14 @@
 						<div
 							v-if="
 								imageTypes == 'backdrops' &&
-									showImages.backdrops.length
+									show.images.backdrops.length
 							"
 							key="backdrops"
 						>
 							<app-items-slider slideOrientation="landscape">
 								<app-images-slider-item
-									v-for="(image,
-									index) in showImages.backdrops"
+									v-for="(image, index) in show.images
+										.backdrops"
 									:key="image.file_path"
 									:image="
 										`https://image.tmdb.org/t/p/w1280/${image.file_path}`
@@ -188,30 +203,31 @@
 					</transition>
 				</div>
 			</div>
-			<!-- <div v-if="showVideos.length" class="pt-60 pb-30 info-section">
+			<div v-if="show.videosList.length" class="pt-60 pb-30 info-section">
 				<div class="container-fluid app-container-fluid">
 					<h2 class="section-title">Videos</h2>
-					<app-items-slider  slideOrientation="landscape">
+					<app-items-slider slideOrientation="landscape">
 						<app-list-item
-							v-for="item in showVideos"
+							v-for="item in show.videosList"
 							:key="item.id"
 							:id="item.id"
+							:videoKey="item.videoKey"
 							:image="item.image"
 							:name="item.name"
 							mediaType="youTube"
 							:sliderItem="true"
 							orientation="landscape"
+							:showVideoFallback="showVideoFallback"
 						/>
 					</app-items-slider>
 				</div>
-			</div> -->
-			<!--CAST-->
-			<div v-if="showCast.length" class="pt-60 pb-30 info-section">
+			</div>
+			<div v-if="show.cast.length" class="pt-60 pb-30 info-section">
 				<div class="container-fluid app-container-fluid">
 					<h2 class="section-title">Cast</h2>
 					<app-items-slider slideOrientation="portrait">
 						<app-list-item
-							v-for="item in showCast"
+							v-for="item in show.cast"
 							:key="item.id"
 							:id="item.id"
 							:image="item.profile_path"
@@ -219,21 +235,19 @@
 							:character="item.character"
 							mediaType="person"
 							:sliderItem="true"
+							orientation="portrait"
 						/>
 					</app-items-slider>
 				</div>
 			</div>
 
 			<!--SIMILAR-->
-			<div
-				class="pt-60 pb-30  info-section"
-				v-if="showSimilar.total_results > 0"
-			>
+			<div class="pt-60 pb-30  info-section" v-if="show.similar.length">
 				<div class="container-fluid app-container-fluid">
 					<h2 class="section-title">Similar</h2>
 					<app-items-slider slideOrientation="portrait">
 						<app-list-item
-							v-for="item in showSimilar.results"
+							v-for="item in show.similar"
 							:key="item.id"
 							:id="item.id"
 							:image="item.poster_path || item.profile_path"
@@ -244,24 +258,25 @@
 							"
 							mediaType="tv"
 							:sliderItem="true"
+							orientation="portrait"
 						/>
 					</app-items-slider>
 				</div>
 			</div>
 			<client-only>
 				<app-light-box
-					:media="showPosters"
+					:media="show.posters"
 					:showThumbs="false"
 					:showLightBox="false"
 					ref="posterGallery"
-					v-if="showPosters.length"
+					v-if="show.posters"
 				/>
 				<app-light-box
-					:media="showBackdrops"
+					:media="show.backdrops"
 					:showThumbs="false"
 					:showLightBox="false"
 					ref="backdropGallery"
-					v-if="showBackdrops.length"
+					v-if="show.backdrops"
 				/>
 			</client-only>
 		</template>
@@ -276,15 +291,8 @@ import AppImagesSliderItem from '@/components/AppImagesSliderItem'
 export default {
 	data() {
 		return {
-			show: [],
-			showSeasons: [],
-			showImages: [],
-			showVideos: [],
-			showCast: [],
-			showCrew: [],
-			showSimilar: [],
-			showPosters: [],
-			showBackdrops: [],
+			show: {},
+			showVideoFallback: false,
 			imageTypes: 'posters'
 		}
 	},
@@ -300,69 +308,78 @@ export default {
 			})
 
 		this.show = show.data
-		this.showSeasons = show.data.seasons
-		this.showImages = show.data.images
-		this.showCast = show.data.credits.cast.splice(0, 20)
-		this.showCrew = show.data.credits.crew.splice(0, 20)
-		this.showSimilar = show.data.similar
+		this.show.seasons = show.data.seasons
+		this.show.images = show.data.images
+		this.show.cast = show.data.credits.cast.splice(0, 20)
+		this.show.similar = show.data.similar.results
+		this.show.backdrops = []
+		this.show.posters = []
+		this.show.videosList = []
 
-		for (const image of this.showImages.backdrops) {
-			this.showBackdrops.push({
+		for (const image of this.show.images.backdrops) {
+			this.show.backdrops.push({
 				src: `https://image.tmdb.org/t/p/w1280/${image.file_path}`
 			})
 		}
 
-		for (const image of this.showImages.posters) {
-			this.showPosters.push({
+		for (const image of this.show.images.posters) {
+			this.show.posters.push({
 				src: `https://image.tmdb.org/t/p/w780/${image.file_path}`
 			})
 		}
 
-		// if (show.data.videos.results.length) {
-		// 	for (const video of show.data.videos.results) {
-		// 		if (video.site == 'YouTube' && video.type != 'Bloopers') {
-		// 			const youTubeVideo = await this.$axios
-		// 				.get(
-		// 					`https://www.googleapis.com/youtube/v3/videos?key=${youTubeApiKey}&part=snippet&id=${video.key}`
-		// 				)
-		// 				.catch(err => {
-		// 					console.log(err)
-		// 				})
-		// 			function getThumbnail() {
-		// 				const thumbnailsObject =
-		// 					youTubeVideo.data.items[0].snippet.thumbnails
-		// 				const sortedThumbnails = Object.keys(
-		// 					thumbnailsObject
-		// 				).sort(function(a, b) {
-		// 					return (
-		// 						thumbnailsObject[b].width -
-		// 						thumbnailsObject[a].width
-		// 					)
-		// 				})
+		if (show.data.videos.results.length) {
+			const videoKeys = []
+			for (const video of show.data.videos.results) {
+				if (video.site == 'YouTube' && video.type != 'Bloopers') {
+					videoKeys.push(video.key)
+				}
+			}
 
-		// 				const thumbnailSize = sortedThumbnails[0]
+			const youTubeVideos = await this.$axios
+				.get(
+					`https://www.googleapis.com/youtube/v3/videos?key=${youTubeApiKey}&part=snippet&id=${videoKeys.join()}`
+				)
+				.catch(err => {
+					console.log(err)
+					this.showVideoFallback = true
+				})
+			if (!this.showVideoFallback) {
+				for (const video of youTubeVideos.data.items) {
+					function getThumbnail() {
+						const thumbnailsObject = video.snippet.thumbnails
+						const sortedThumbnails = Object.keys(
+							thumbnailsObject
+						).sort(function(a, b) {
+							return (
+								thumbnailsObject[b].width -
+								thumbnailsObject[a].width
+							)
+						})
 
-		// 				return thumbnailsObject[thumbnailSize].url
-		// 			}
-		// 			this.showVideos.push({
-		// 				id: youTubeVideo.data.items[0].id,
-		// 				name:
-		// 					youTubeVideo.data.items[0].snippet.localized.title,
-		// 				image: getThumbnail()
-		// 			})
-		// 		}
-		// 	}
-		// }
+						const thumbnailSize = sortedThumbnails[0]
+
+						return thumbnailsObject[thumbnailSize].url
+					}
+					this.show.videosList.push({
+						id: video.id,
+						name: video.snippet.title,
+						image: getThumbnail()
+					})
+				}
+			} else {
+				for (const video of this.show.videos.results) {
+					this.show.videosList.push({
+						id: video.id,
+						videoKey: video.key,
+						name: video.name,
+						image: ''
+					})
+				}
+			}
+		}
 	},
 	methods: {
-		getRuntime(time) {
-			let hours = Math.floor(time / 60)
-			let minutes = Math.round(time - hours * 60)
-			let hoursText = hours != 0 ? `${hours}h` : ''
-			let minutesText = minutes != 0 ? `${minutes}m` : ''
-
-			return `${hoursText} ${minutesText}`
-		},
 		openPosterGallery(index) {
 			this.$refs.posterGallery.showImage(index)
 		},

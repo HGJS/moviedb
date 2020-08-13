@@ -16,6 +16,7 @@
 						:image="movie.poster_path"
 						:name="movie.original_title"
 						mediaType="movie"
+						orientation="portrait"
 					/>
 				</div>
 				<div v-if="totalPages > 1" class="row mt-30">
