@@ -1,6 +1,6 @@
 # movie-database
 
-> My wonderful Nuxt.js project
+> [Deployed here](https://vue-movie-db.netlify.app/)
 
 ## Build Setup
 
