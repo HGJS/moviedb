@@ -68,6 +68,9 @@ export default {
 		baseURL: 'https://api.themoviedb.org/3',
 		progress: false
 	},
+	generate: {
+		fallback: true
+	},
 	/*
 	 ** Build configuration
 	 */
