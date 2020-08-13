@@ -66,7 +66,7 @@
 									</p>
 								</div>
 								<div class="row">
-									<div class="col-6 mb-20">
+									<div class="col-6">
 										<div class="page-banner__content-area">
 											<h2>First aired</h2>
 											<p>{{ show.first_air_date }}</p>
@@ -76,7 +76,7 @@
 											<p>{{ show.number_of_episodes }}</p>
 										</div>
 									</div>
-									<div class="col-6 mb-20">
+									<div class="col-6">
 										<div class="page-banner__content-area">
 											<h2>Genres</h2>
 											<ul>

@@ -67,7 +67,7 @@
 									</p>
 								</div>
 								<div class="row">
-									<div class="col-6 mb-20">
+									<div class="col-6">
 										<div class="page-banner__content-area">
 											<h2>Release date</h2>
 											<p>{{ movie.release_date }}</p>
@@ -77,7 +77,7 @@
 											</p>
 										</div>
 									</div>
-									<div class="col-6 mb-20">
+									<div class="col-6">
 										<div class="page-banner__content-area">
 											<h2>Genres</h2>
 											<ul>
