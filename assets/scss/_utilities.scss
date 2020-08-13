@@ -5,6 +5,7 @@
 .md-max-400 {
 	@include respond-max($md-max) {
 		display: block;
+		width: 100%;
 		max-width: 400px;
 		margin-left: auto;
 		margin-right: auto;
