@@ -28,7 +28,7 @@
 						<div class="row">
 							<div
 								v-if="person.profile_path"
-								class="col-12 col-md-6 col-lg-4 mb-30"
+								class="col-12 col-md-4 mb-30"
 							>
 								<img
 									:src="
@@ -38,7 +38,10 @@
 									class="img-fluid md-max-400"
 								/>
 							</div>
-							<div class="col-12 col-md-6 col-lg-8 mb-30">
+							<div
+								class="col-12 mb-30"
+								:class="{ 'col-md-8': person.profile_path }"
+							>
 								<h1 class="page-banner__title">
 									{{ person.name }}
 								</h1>
@@ -122,11 +125,7 @@
 									:image="
 										item.poster_path || item.profile_path
 									"
-									:name="
-										item.original_title ||
-											item.original_name ||
-											item.name
-									"
+									:name="item.title || item.name"
 									:character="item.character"
 									mediaType="movie"
 									:sliderItem="true"
@@ -146,11 +145,7 @@
 									:image="
 										item.poster_path || item.profile_path
 									"
-									:name="
-										item.original_title ||
-											item.original_name ||
-											item.name
-									"
+									:name="item.title || item.name"
 									:character="item.character"
 									mediaType="tv"
 									:sliderItem="true"
@@ -213,7 +208,7 @@ export default {
 		const apiKey = 'f19c666067ae31ab26cb6225b464a8dc'
 		const person = await this.$axios
 			.get(
-				`/person/${this.$route.params.id}?api_key=${apiKey}&language=en-US&append_to_response=images,movie_credits,tv_credits`
+				`/person/${this.$route.params.id}?api_key=${apiKey}&language=en&append_to_response=images,movie_credits,tv_credits`
 			)
 			.catch(err => {
 				console.log(err)

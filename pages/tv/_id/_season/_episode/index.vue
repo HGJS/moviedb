@@ -32,7 +32,7 @@
 				<div class="page-banner__inner">
 					<div class="container-fluid app-container-fluid">
 						<div class="row">
-							<div class="col-12 col-md-8 col-lg-9 mb-30">
+							<div class="col-12 mb-30">
 								<h1 class="page-banner__title">
 									{{ episode.name }}
 								</h1>
@@ -158,11 +158,7 @@
 									item.poster_path ||
 									item.profile_path
 							"
-							:name="
-								item.original_title ||
-									item.original_name ||
-									item.name
-							"
+							:name="item.title || item.name"
 							mediaType="tv-episode"
 							:season="season.season_number"
 							:episode="item.episode_number"
@@ -203,16 +199,14 @@ export default {
 		const apiKey = 'f19c666067ae31ab26cb6225b464a8dc'
 
 		const show = await this.$axios
-			.get(
-				`/tv/${this.$route.params.id}?api_key=${apiKey}&language=en-US`
-			)
+			.get(`/tv/${this.$route.params.id}?api_key=${apiKey}&language=en`)
 			.catch(err => {
 				console.log(err)
 			})
 
 		const season = await this.$axios
 			.get(
-				`/tv/${this.$route.params.id}/season/${this.$route.params.season}?api_key=${apiKey}&language=en-US`
+				`/tv/${this.$route.params.id}/season/${this.$route.params.season}?api_key=${apiKey}&language=en`
 			)
 			.catch(err => {
 				console.log(err)
@@ -220,7 +214,7 @@ export default {
 
 		const episode = await this.$axios
 			.get(
-				`/tv/${this.$route.params.id}/season/${this.$route.params.season}/episode/${this.$route.params.episode}?api_key=${apiKey}&language=en-US&append_to_response=credits,images`
+				`/tv/${this.$route.params.id}/season/${this.$route.params.season}/episode/${this.$route.params.episode}?api_key=${apiKey}&language=en&append_to_response=credits,images`
 			)
 			.catch(err => {
 				console.log(err)

@@ -46,11 +46,7 @@
 								:key="item.id"
 								:id="item.id"
 								:image="item.poster_path || item.profile_path"
-								:name="
-									item.original_title ||
-										item.original_name ||
-										item.name
-								"
+								:name="item.title || item.name"
 								:mediaType="item.media_type"
 								:sliderItem="true"
 								orientation="portrait"
@@ -64,11 +60,7 @@
 								:key="item.id"
 								:id="item.id"
 								:image="item.poster_path || item.profile_path"
-								:name="
-									item.original_title ||
-										item.original_name ||
-										item.name
-								"
+								:name="item.title || item.name"
 								:mediaType="item.media_type"
 								:sliderItem="true"
 								orientation="portrait"
@@ -123,13 +115,13 @@ export default {
 		const apiKey = 'f19c666067ae31ab26cb6225b464a8dc'
 
 		const trendingDaily = await this.$axios
-			.get(`/trending/${this.type}/day?api_key=${apiKey}&language=en-US`)
+			.get(`/trending/${this.type}/day?api_key=${apiKey}&language=en`)
 			.catch(err => {
 				console.log(err)
 			})
 
 		const trendingWeekly = await this.$axios
-			.get(`/trending/${this.type}/week?api_key=${apiKey}&language=en-US`)
+			.get(`/trending/${this.type}/week?api_key=${apiKey}&language=en`)
 			.catch(err => {
 				console.log(err)
 			})

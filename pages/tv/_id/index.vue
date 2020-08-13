@@ -34,19 +34,22 @@
 						<div class="row">
 							<div
 								v-if="show.poster_path"
-								class="col-12 col-md-6 col-lg-4 mb-30"
+								class="col-12 col-md-4 mb-30"
 							>
 								<img
 									:src="
 										`https://image.tmdb.org/t/p/w780/${show.poster_path}`
 									"
-									:alt="show.original_name"
+									:alt="show.name"
 									class="img-fluid md-max-400"
 								/>
 							</div>
-							<div class="col-12 col-md-6 col-lg-8 mb-30">
+							<div
+								class="col-12 mb-30"
+								:class="{ 'col-md-8': show.poster_path }"
+							>
 								<h1 class="page-banner__title">
-									{{ show.original_name }}
+									{{ show.name }}
 								</h1>
 								<div class="page-banner__content-area mb-20">
 									<h2>Overview</h2>
@@ -55,7 +58,9 @@
 
 									<p class="page-banner__rating">
 										<span class="page-banner__rating-box">{{
-											show.vote_average
+											Number.parseFloat(
+												show.vote_average
+											).toFixed(1)
 										}}</span>
 										based on {{ show.vote_count }} reviews
 									</p>
@@ -100,11 +105,7 @@
 							:key="item.id"
 							:id="show.id"
 							:image="item.poster_path || item.profile_path"
-							:name="
-								item.original_title ||
-									item.original_name ||
-									item.name
-							"
+							:name="item.title || item.name"
 							:season="item.season_number"
 							mediaType="tv-season"
 							:sliderItem="true"
@@ -168,9 +169,8 @@
 									@click="openPosterGallery(index)"
 									orientation="portrait"
 									:name="
-										`${
-											show.original_title
-										} poster image ${index + 1}`
+										`${show.title} poster image ${index +
+											1}`
 									"
 								/>
 							</app-items-slider>
@@ -193,9 +193,8 @@
 									@click="openBackdropGallery(index)"
 									orientation="landscape"
 									:name="
-										`${
-											show.original_title
-										} backdrop image ${index + 1}`
+										`${show.title} backdrop image ${index +
+											1}`
 									"
 								/>
 							</app-items-slider>
@@ -251,11 +250,7 @@
 							:key="item.id"
 							:id="item.id"
 							:image="item.poster_path || item.profile_path"
-							:name="
-								item.original_title ||
-									item.original_name ||
-									item.name
-							"
+							:name="item.title || item.name"
 							mediaType="tv"
 							:sliderItem="true"
 							orientation="portrait"
@@ -301,7 +296,7 @@ export default {
 		const apiKey = 'f19c666067ae31ab26cb6225b464a8dc'
 		const show = await this.$axios
 			.get(
-				`/tv/${this.$route.params.id}?api_key=${apiKey}&language=en-US&include_image_language=en&append_to_response=images,videos,credits,similar`
+				`/tv/${this.$route.params.id}?api_key=${apiKey}&language=en&include_image_language=en&append_to_response=images,videos,credits,similar`
 			)
 			.catch(err => {
 				console.log(err)
@@ -403,9 +398,7 @@ export default {
 	},
 	head() {
 		return {
-			title: this.show.original_name
-				? `${this.show.original_name} - MovieDB`
-				: 'MovieDB'
+			title: this.show.name ? `${this.show.name} - MovieDB` : 'MovieDB'
 		}
 	},
 	components: {

@@ -6,6 +6,15 @@
 					<span class="fas fa-circle-notch fa-spin"></span>
 				</div>
 			</div>
+			<div v-else-if="$fetchState.error">
+				<h1 class="page-title">Error</h1>
+				<div class="content-area">
+					<p class="mb-30">
+						There was an error fetching content.
+					</p>
+					<nuxt-link class="button" to="/">Home</nuxt-link>
+				</div>
+			</div>
 			<template v-else>
 				<h1 class="page-title">People</h1>
 				<div class="row">
@@ -54,7 +63,7 @@ export default {
 		const pageNumber = this.$route.query.page || 1
 		const results = await this.$axios
 			.get(
-				`/person/popular?api_key=${apiKey}&page=${pageNumber}&language=en-US`
+				`/person/popular?api_key=${apiKey}&page=${pageNumber}&language=en`
 			)
 			.catch(err => {
 				this.hasError = true

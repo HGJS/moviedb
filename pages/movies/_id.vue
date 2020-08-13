@@ -34,19 +34,22 @@
 						<div class="row">
 							<div
 								v-if="movie.poster_path"
-								class="col-12 col-md-6 col-lg-4 mb-30"
+								class="col-12 col-md-4 mb-30"
 							>
 								<img
 									:src="
 										`https://image.tmdb.org/t/p/w780/${movie.poster_path}`
 									"
-									:alt="movie.original_title"
+									:alt="movie.title"
 									class="img-fluid md-max-400"
 								/>
 							</div>
-							<div class="col-12 col-md-6 col-lg-8 mb-30">
+							<div
+								class="col-12 mb-30"
+								:class="{ 'col-md-8': movie.poster_path }"
+							>
 								<h1 class="page-banner__title">
-									{{ movie.original_title }}
+									{{ movie.title }}
 								</h1>
 								<div class="page-banner__content-area mb-20">
 									<h2>Overview</h2>
@@ -55,7 +58,9 @@
 
 									<p class="page-banner__rating">
 										<span class="page-banner__rating-box">{{
-											movie.vote_average
+											Number.parseFloat(
+												movie.vote_average
+											).toFixed(1)
 										}}</span>
 										based on
 										{{ movie.vote_count }} reviews
@@ -148,9 +153,8 @@
 									@click="openPosterGallery(index)"
 									orientation="portrait"
 									:name="
-										`${
-											movie.original_title
-										} poster image ${index + 1}`
+										`${movie.title} poster image ${index +
+											1}`
 									"
 								/>
 							</app-items-slider>
@@ -173,9 +177,8 @@
 									@click="openBackdropGallery(index)"
 									orientation="landscape"
 									:name="
-										`${
-											movie.original_title
-										} backdrop image ${index + 1}`
+										`${movie.title} backdrop image ${index +
+											1}`
 									"
 								/>
 							</app-items-slider>
@@ -234,11 +237,7 @@
 							:key="item.id"
 							:id="item.id"
 							:image="item.poster_path || item.profile_path"
-							:name="
-								item.original_title ||
-									item.original_name ||
-									item.name
-							"
+							:name="item.title || item.name"
 							mediaType="movie"
 							:sliderItem="true"
 							orientation="portrait"
@@ -284,7 +283,7 @@ export default {
 		const apiKey = 'f19c666067ae31ab26cb6225b464a8dc'
 		const movie = await this.$axios
 			.get(
-				`/movie/${this.$route.params.id}?api_key=${apiKey}&language=en-US&include_image_language=en&append_to_response=images,videos,credits,similar`
+				`/movie/${this.$route.params.id}?api_key=${apiKey}&language=en&include_image_language=en&append_to_response=images,videos,credits,similar`
 			)
 			.catch(err => {
 				console.log(err)
@@ -395,8 +394,8 @@ export default {
 	},
 	head() {
 		return {
-			title: this.movie.original_title
-				? `${this.movie.original_title} - MovieDB`
+			title: this.movie.title
+				? `${this.movie.title} - MovieDB`
 				: 'MovieDB'
 		}
 	},

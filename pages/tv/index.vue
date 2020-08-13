@@ -6,6 +6,15 @@
 					<span class="fas fa-circle-notch fa-spin"></span>
 				</div>
 			</div>
+			<div v-else-if="$fetchState.error">
+				<h1 class="page-title">Error</h1>
+				<div class="content-area">
+					<p class="mb-30">
+						There was an error fetching content.
+					</p>
+					<nuxt-link class="button" to="/">Home</nuxt-link>
+				</div>
+			</div>
 			<template v-else>
 				<h1 class="page-title">TV Shows</h1>
 				<div class="row">
@@ -14,7 +23,7 @@
 						:key="show.id"
 						:id="show.id"
 						:image="show.poster_path"
-						:name="show.original_name"
+						:name="show.name"
 						mediaType="tv"
 						orientation="portrait"
 					/>
@@ -53,9 +62,7 @@ export default {
 		const apiKey = 'f19c666067ae31ab26cb6225b464a8dc'
 		const pageNumber = this.$route.query.page || 1
 		const results = await this.$axios
-			.get(
-				`/tv/popular?api_key=${apiKey}&page=${pageNumber}&language=en-US`
-			)
+			.get(`/tv/popular?api_key=${apiKey}&page=${pageNumber}&language=en`)
 			.catch(err => {
 				this.hasError = true
 			})

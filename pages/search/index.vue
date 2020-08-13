@@ -7,6 +7,15 @@
 				</div>
 			</div>
 		</div>
+		<div v-else-if="$fetchState.error">
+			<h1 class="page-title">Error</h1>
+			<div class="content-area">
+				<p class="mb-30">
+					There was an error fetching content.
+				</p>
+				<nuxt-link class="button" to="/">Home</nuxt-link>
+			</div>
+		</div>
 		<div v-else class="container-fluid app-container-fluid">
 			<template v-if="searchTerms">
 				<h1 class="page-title">Search</h1>
@@ -25,11 +34,7 @@
 						:key="result.id"
 						:id="result.id"
 						:image="result.poster_path || result.profile_path"
-						:name="
-							result.original_title ||
-								result.original_name ||
-								result.name
-						"
+						:name="result.title || result.name"
 						:mediaType="result.media_type"
 						orientation="portrait"
 					/>
@@ -96,7 +101,7 @@ export default {
 		const pageNumber = this.$route.query.page || 1
 		const encodedSearch = this.$route.query.q
 		const results = await this.$axios.get(
-			`/search/multi?api_key=${apiKey}&language=en-US&query=${encodedSearch}&page=${pageNumber}`
+			`/search/multi?api_key=${apiKey}&language=en&query=${encodedSearch}&page=${pageNumber}`
 		)
 		this.results = results.data.results
 		this.totalPages = results.data.total_pages
