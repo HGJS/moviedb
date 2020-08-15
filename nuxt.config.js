@@ -51,15 +51,14 @@ export default {
 	/*
 	 ** Nuxt.js dev-modules
 	 */
-	buildModules: ['nuxt-purgecss'],
+	buildModules: [],
 	/*
 	 ** Nuxt.js modules
 	 */
 	modules: [
 		// Doc: https://axios.nuxtjs.org/usage
 		'@nuxtjs/axios',
-		'bootstrap-vue/nuxt',
-		'nuxt-lazy-load'
+		'bootstrap-vue/nuxt'
 	],
 	/*
 	 ** Axios module configuration
