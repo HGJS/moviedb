@@ -39,7 +39,9 @@
 								<div class="page-banner__content-area">
 									<template v-if="episode.overview">
 										<h2>Overview</h2>
-										<p>{{ episode.overview }}</p>
+										<p class="page-banner__desc">
+											{{ episode.overview }}
+										</p>
 									</template>
 									<p class="page-banner__rating">
 										<span class="page-banner__rating-box">{{

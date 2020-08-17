@@ -51,14 +51,20 @@ export default {
 	/*
 	 ** Nuxt.js dev-modules
 	 */
-	buildModules: [],
+	buildModules: ['nuxt-purgecss'],
 	/*
 	 ** Nuxt.js modules
 	 */
 	modules: [
 		// Doc: https://axios.nuxtjs.org/usage
 		'@nuxtjs/axios',
-		'bootstrap-vue/nuxt'
+		'bootstrap-vue/nuxt',
+		[
+			'nuxt-lazy-load',
+			{
+				defaultImage: '/lazy-placeholder.png'
+			}
+		]
 	],
 	/*
 	 ** Axios module configuration
@@ -74,6 +80,10 @@ export default {
 	/*
 	 ** Build configuration
 	 */
+	purgeCSS: {
+		whitelistPatterns: [/^slick/, /^vue-lb/],
+		whitelistPatternsChildren: [/^slick/, /^vue-lb/]
+	},
 	build: {
 		/*
 		 ** You can extend webpack config here

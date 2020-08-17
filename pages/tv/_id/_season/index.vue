@@ -39,7 +39,9 @@
 								<div class="page-banner__content-area">
 									<template v-if="season.overview">
 										<h2>Overview</h2>
-										<p>{{ season.overview }}</p>
+										<p class="page-banner__desc">
+											{{ season.overview }}
+										</p>
 									</template>
 									<p>
 										<nuxt-link :to="`/tv/${show.id}`">

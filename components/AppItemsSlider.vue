@@ -1,33 +1,31 @@
 <template>
-	<client-only>
-		<div class="items-slider">
-			<div class="items-slider__wrap">
-				<div class="items-slider__inner">
-					<VueSlickCarousel
-						v-bind="settings"
-						ref="slider"
-						@reInit="checkControls"
-					>
-						<slot></slot>
-					</VueSlickCarousel>
-				</div>
-			</div>
-			<div v-if="showControls" class="items-slider__buttons-wrap">
-				<button
-					class="button items-slider__button items-slider__button--prev"
-					@click="showPrev"
+	<div class="items-slider">
+		<div class="items-slider__wrap">
+			<div class="items-slider__inner">
+				<VueSlickCarousel
+					v-bind="settings"
+					ref="slider"
+					@reInit="checkControls"
 				>
-					<span class="fal fa-angle-left"></span>
-				</button>
-				<button
-					class="button items-slider__button items-slider__button--next"
-					@click="showNext"
-				>
-					<span class="fal fa-angle-right"></span>
-				</button>
+					<slot></slot>
+				</VueSlickCarousel>
 			</div>
 		</div>
-	</client-only>
+		<div v-if="showControls" class="items-slider__buttons-wrap">
+			<button
+				class="button items-slider__button items-slider__button--prev"
+				@click="showPrev"
+			>
+				<span class="fal fa-angle-left"></span>
+			</button>
+			<button
+				class="button items-slider__button items-slider__button--next"
+				@click="showNext"
+			>
+				<span class="fal fa-angle-right"></span>
+			</button>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -52,7 +50,6 @@ export default {
 					arrows: false,
 					slidesToShow: 4,
 					slidesToScroll: 1,
-					lazyLoad: 'ondemand',
 					responsive: [
 						{
 							breakpoint: 1024,
@@ -73,7 +70,6 @@ export default {
 					arrows: false,
 					slidesToShow: 2,
 					slidesToScroll: 1,
-					lazyLoad: 'ondemand',
 					responsive: [
 						{
 							breakpoint: 768,
