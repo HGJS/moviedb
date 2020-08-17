@@ -53,7 +53,10 @@
 								</h1>
 								<div class="page-banner__content-area mb-20">
 									<h2>Overview</h2>
-									<p v-html="movie.overview"></p>
+									<p
+										class="page-banner__description"
+										v-html="movie.overview"
+									></p>
 									<h2>Rating</h2>
 
 									<p class="page-banner__rating">

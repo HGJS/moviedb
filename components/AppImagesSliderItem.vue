@@ -1,5 +1,5 @@
 <template>
-	<div class="col image-slider-item">
+	<div class="image-slider-item">
 		<a
 			href="#"
 			@click.prevent="handleClick"

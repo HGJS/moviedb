@@ -65,7 +65,10 @@
 									</template>
 									<template v-if="person.biography">
 										<h2>Biography</h2>
-										<p v-html="person.biography"></p>
+										<p
+											class="page-banner__description"
+											v-html="person.biography"
+										></p>
 									</template>
 								</div>
 							</div>

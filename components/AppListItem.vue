@@ -2,7 +2,7 @@
 	<div
 		:class="{
 			'col-6 col-sm-6 col-md-3': !sliderItem,
-			'col slider-item': sliderItem
+			'slider-item': sliderItem
 		}"
 		class="mb-30 list-item"
 	>

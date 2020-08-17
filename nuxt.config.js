@@ -59,7 +59,12 @@ export default {
 		// Doc: https://axios.nuxtjs.org/usage
 		'@nuxtjs/axios',
 		'bootstrap-vue/nuxt',
-		'nuxt-lazy-load'
+		[
+			'nuxt-lazy-load',
+			{
+				defaultImage: '/lazy-placeholder.png'
+			}
+		]
 	],
 	/*
 	 ** Axios module configuration
@@ -70,7 +75,12 @@ export default {
 		progress: false
 	},
 	generate: {
-		fallback: true
+		fallback: true,
+		exclude: [/^\/movies/, /^\/people/, /^\/tv/, /^\/search/]
+	},
+	purgeCSS: {
+		whitelistPatterns: [/^slick/, /^vue-lb/],
+		whitelistPatternsChildren: [/^slick/, /^vue-lb/]
 	},
 	/*
 	 ** Build configuration
