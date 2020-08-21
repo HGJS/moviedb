@@ -361,6 +361,7 @@ export default {
 					}
 					this.show.videosList.push({
 						id: video.id,
+						videoKey: video.id,
 						name: video.snippet.title,
 						image: getThumbnail()
 					})
