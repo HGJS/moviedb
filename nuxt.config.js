@@ -69,7 +69,7 @@ export default {
 		progress: false
 	},
 	generate: {
-		exclude: [/^\/movies/, /^\/people/, /^\/search/, /^\/tv/],
+		// exclude: [/^\/movies/, /^\/people/, /^\/search/, /^\/tv/],
 		fallback: true
 	},
 	/*
