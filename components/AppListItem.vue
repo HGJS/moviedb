@@ -16,7 +16,7 @@
 					}"
 				>
 					<img
-						:src="imagePath"
+						v-lazy="imageOptions"
 						:alt="name"
 						class="list-item__link-image"
 					/>
@@ -38,7 +38,7 @@
 					class="list-item__link-image-wrap list-item__link-image-wrap--landscape"
 				>
 					<img
-						:src="imagePath"
+						v-lazy="imageOptions"
 						:alt="name"
 						class="list-item__link-image"
 					/>
@@ -90,36 +90,58 @@ export default {
 		}
 	},
 	computed: {
-		imagePath() {
-			if (this.mediaType == 'youTube' && this.showVideoFallback) {
-				return `/video-fallback-landscape.png`
-			}
+		imageOptions() {
+			const imagePath = () => {
+				if (this.mediaType == 'youTube' && this.showVideoFallback) {
+					return `/video-fallback-landscape.png`
+				}
 
-			if (this.orientation == 'portrait') {
-				if (!this.image) {
-					if (this.mediaType == 'person') {
-						return '/person-fallback.png'
+				if (this.orientation == 'portrait') {
+					if (!this.image) {
+						if (this.mediaType == 'person') {
+							return '/person-fallback.png'
+						}
+						return '/movie-tv-fallback.png'
 					}
-					return '/movie-tv-fallback.png'
-				}
-				if (this.mediaType != 'youTube') {
-					return `https://image.tmdb.org/t/p/w780/${this.image}`
-				}
-			}
-
-			if (this.orientation == 'landscape') {
-				if (!this.image) {
-					if (this.mediaType == 'person') {
-						return '/person-fallback-landscape.png'
+					if (this.mediaType != 'youTube') {
+						return `https://image.tmdb.org/t/p/w780/${this.image}`
 					}
-					return '/movie-tv-fallback-landscape.png'
 				}
-				if (this.mediaType != 'youTube') {
-					return `https://image.tmdb.org/t/p/w1280/${this.image}`
+
+				if (this.orientation == 'landscape') {
+					if (!this.image) {
+						if (this.mediaType == 'person') {
+							return '/person-fallback-landscape.png'
+						}
+						return '/movie-tv-fallback-landscape.png'
+					}
+					if (this.mediaType != 'youTube') {
+						return `https://image.tmdb.org/t/p/w1280/${this.image}`
+					}
 				}
+
+				return this.image
 			}
 
-			return this.image
+			const loadingImagePath = () => {
+				if (this.orientation == 'portrait') {
+					return '/lazy-loading.png'
+				}
+				return '/lazy-loading-landscape.png'
+			}
+
+			const errorImagePath = () => {
+				if (this.orientation == 'portrait') {
+					return '/lazy-loading-error.png'
+				}
+				return '/lazy-loading-error-landscape.png'
+			}
+
+			return {
+				src: imagePath(),
+				error: errorImagePath(),
+				loading: loadingImagePath()
+			}
 		},
 		itemLink() {
 			switch (this.mediaType) {

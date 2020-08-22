@@ -14,7 +14,7 @@
 			>
 				<div class="image-slider-item__link-image">
 					<img
-						:src="image"
+						v-lazy="imageOptions"
 						:alt="name"
 						class="list-item__link-image"
 					/>
@@ -43,6 +43,29 @@ export default {
 	methods: {
 		handleClick() {
 			this.$emit('click')
+		}
+	},
+	computed: {
+		imageOptions() {
+			const loadingImagePath = () => {
+				if (this.orientation == 'portrait') {
+					return '/lazy-loading.png'
+				}
+				return '/lazy-loading-landscape.png'
+			}
+
+			const errorImagePath = () => {
+				if (this.orientation == 'portrait') {
+					return '/lazy-loading-error.png'
+				}
+				return '/lazy-loading-error-landscape.png'
+			}
+
+			return {
+				src: this.image,
+				error: errorImagePath(),
+				loading: loadingImagePath()
+			}
 		}
 	}
 }

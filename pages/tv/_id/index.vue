@@ -172,8 +172,7 @@
 									@click="openPosterGallery(index)"
 									orientation="portrait"
 									:name="
-										`${show.title} poster image ${index +
-											1}`
+										`${show.name} poster image ${index + 1}`
 									"
 								/>
 							</app-items-slider>
@@ -196,7 +195,7 @@
 									@click="openBackdropGallery(index)"
 									orientation="landscape"
 									:name="
-										`${show.title} backdrop image ${index +
+										`${show.name} backdrop image ${index +
 											1}`
 									"
 								/>
