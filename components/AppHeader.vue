@@ -64,11 +64,7 @@
 				<div class="app-header__search-form-wrap-inner">
 					<div class="container-fluid  app-container-fluid">
 						<app-header-search-form
-							@processSearch="
-								{
-									showSearch = false
-								}
-							"
+							@processSearch="processSearch"
 						/>
 					</div>
 				</div>
@@ -91,8 +87,8 @@ export default {
 		}
 	},
 	methods: {
-		processSearch(e) {
-			console.log('processSearch')
+		processSearch() {
+			this.showSearch = false
 		},
 		toggleSearch() {
 			this.showSearch = !this.showSearch

@@ -24,6 +24,9 @@ export default {
 			this.$refs.searchTerms.value = ''
 			this.$emit('processSearch')
 		}
+	},
+	mounted() {
+		this.$refs.searchTerms.focus()
 	}
 }
 </script>
