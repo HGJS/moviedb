@@ -22,25 +22,13 @@
 						v-for="show in shows"
 						:key="show.id"
 						:id="show.id"
-						:image="show.poster_path"
+						:image="show.imagePath"
 						:name="show.name"
 						mediaType="tv"
 						orientation="portrait"
 					/>
 				</div>
-				<div class="row mt-30">
-					<div v-if="currentPage != 1" class="app-col mr-auto">
-						<button class="button" @click="prevPage">
-							Previous
-						</button>
-					</div>
-					<div
-						v-if="currentPage != totalPages"
-						class="app-col ml-auto"
-					>
-						<button class="button" @click="nextPage">Next</button>
-					</div>
-				</div>
+				<app-pagination routeName="tv" :totalPages="totalPages" />
 			</template>
 		</div>
 	</div>
@@ -48,50 +36,54 @@
 
 <script>
 import AppListItem from '@/components/AppListItem'
+import AppPagination from '@/components/AppPagination'
+import list from '~/assets/js/list'
 
 export default {
+	name: 'tv',
 	data() {
 		return {
 			shows: [],
-			totalPages: 0,
-			currentPage: this.$route.query.page || 1,
+			totalPages: 1,
 			hasError: false
 		}
 	},
 	async fetch() {
 		const apiKey = 'f19c666067ae31ab26cb6225b464a8dc'
-		const pageNumber = this.$route.query.page || 1
-		const results = await this.$axios
-			.get(`/tv/popular?api_key=${apiKey}&page=${pageNumber}&language=en`)
+		const query = this.$route.query
+
+		if (Object.keys(query).length === 0) {
+			this.$router.replace({
+				name: 'tv',
+				query: {
+					page: 1
+				}
+			})
+		}
+
+		const showsData = await this.$axios
+			.get(`/tv/popular`, {
+				params: {
+					api_key: apiKey,
+					language: 'en',
+					...query
+				}
+			})
 			.catch(err => {
 				this.hasError = true
 			})
-		this.shows = results.data.results
-		this.totalPages = results.data.total_pages
-	},
-	methods: {
-		prevPage() {
-			if (this.currentPage != 1 && this.currentPage) {
-				this.currentPage--
-				this.$router.push(`/tv?page=${this.currentPage}`)
-			} else if (!this.currentPage) {
-				this.$router.push(`/tv?page=1`)
-			}
-		},
-		nextPage() {
-			if (this.currentPage != this.totalPages && this.currentPage) {
-				this.currentPage++
-				this.$router.push(`/tv?page=${this.currentPage}`)
-			} else if (!this.currentPage) {
-				this.$router.push(`/tv?page=2`)
-			}
-		}
+
+		const shows = showsData.data.results
+
+		this.shows = list.shows(shows)
+		this.totalPages = showsData.data.total_pages
 	},
 	watch: {
-		'$route.query.page': '$fetch'
+		'$route.query': '$fetch'
 	},
 	components: {
-		'app-list-item': AppListItem
+		'app-list-item': AppListItem,
+		'app-pagination': AppPagination
 	},
 	head() {
 		return {

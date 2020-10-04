@@ -10,9 +10,6 @@
 	color: $color-white;
 	border-radius: 0;
 	text-decoration: none;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
 	transition: background-color 0.3s ease;
 
 	&:hover,
@@ -35,4 +32,24 @@
 			background-color: $color-blue-dark;
 		}
 	}
+
+	&--width-full {
+		width: 100%;
+	}
+
+	&.disabled {
+		pointer-events: none;
+		&,
+		&:hover,
+		&:active,
+		&:focus {
+			background-color: $color-grey-light;
+		}
+	}
+}
+
+a.button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 }

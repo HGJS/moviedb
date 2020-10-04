@@ -45,9 +45,9 @@
 								v-for="item in dailyList"
 								:key="item.id"
 								:id="item.id"
-								:image="item.poster_path || item.profile_path"
-								:name="item.title || item.name"
-								:mediaType="item.media_type"
+								:image="item.imagePath"
+								:name="item.name"
+								:mediaType="item.mediaType"
 								:sliderItem="true"
 								orientation="portrait"
 							/>
@@ -59,9 +59,9 @@
 								v-for="item in weeklyList"
 								:key="item.id"
 								:id="item.id"
-								:image="item.poster_path || item.profile_path"
-								:name="item.title || item.name"
-								:mediaType="item.media_type"
+								:image="item.imagePath"
+								:name="item.name"
+								:mediaType="item.mediaType"
 								:sliderItem="true"
 								orientation="portrait"
 							/>
@@ -76,6 +76,8 @@
 <script>
 import AppItemsSlider from '@/components/AppItemsSlider'
 import AppListItem from '@/components/AppListItem'
+import list from '~/assets/js/list'
+
 export default {
 	data() {
 		return {
@@ -126,8 +128,11 @@ export default {
 				console.log(err)
 			})
 
-		this.dailyList = trendingDaily.data.results
-		this.weeklyList = trendingWeekly.data.results
+		const dailyList = trendingDaily.data.results
+		this.dailyList = list.results(dailyList)
+
+		const weeklyList = trendingWeekly.data.results
+		this.weeklyList = list.results(weeklyList)
 	},
 	components: {
 		'app-list-item': AppListItem,

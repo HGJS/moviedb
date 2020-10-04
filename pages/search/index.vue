@@ -33,89 +33,79 @@
 						v-for="result in results"
 						:key="result.id"
 						:id="result.id"
-						:image="result.poster_path || result.profile_path"
-						:name="result.title || result.name"
-						:mediaType="result.media_type"
+						:image="result.imagePath"
+						:name="result.name"
+						:mediaType="result.mediaType"
 						orientation="portrait"
 					/>
 				</div>
+			</template>
 
-				<div v-if="totalPages > 1" class="row mt-30">
-					<div v-if="currentPage != 1" class="app-col mr-auto">
-						<button class="button" @click="prevPage">
-							Previous
-						</button>
-					</div>
-					<div
-						v-if="currentPage != totalPages"
-						class="app-col ml-auto"
-					>
-						<button class="button" @click="nextPage">Next</button>
-					</div>
+			<template v-else>
+				<div class="content-area mb-30">
+					<p>No results found</p>
 				</div>
 			</template>
+
+			<app-pagination routeName="search" :totalPages="totalPages" />
 		</div>
 	</div>
 </template>
 
 <script>
 import AppListItem from '@/components/AppListItem'
+import AppPagination from '@/components/AppPagination'
+import list from '~/assets/js/list'
+
 export default {
+	name: 'search',
 	data() {
 		return {
 			results: [],
 			totalPages: 1,
-			currentPage: this.$route.query.page || 1,
 			showNoResultsText: true
 		}
 	},
 	computed: {
 		searchTerms() {
-			return decodeURI(this.$route.query.q)
-		}
-	},
-	methods: {
-		prevPage() {
-			if (this.currentPage != 1 && this.currentPage) {
-				this.currentPage--
-				this.$router.push(
-					`/search?q=${this.$route.query.q}&page=${this.currentPage}`
-				)
-			} else if (!this.currentPage) {
-				this.$router.push(`/search?q=${this.$route.query.q}&page=1`)
-			}
-		},
-		nextPage() {
-			if (this.currentPage != this.totalPages && this.currentPage) {
-				this.currentPage++
-				this.$router.push(
-					`/search?q=${this.$route.query.q}&page=${this.currentPage}`
-				)
-			} else if (!this.currentPage) {
-				this.$router.push(`/search?q=${this.$route.query.q}&page=2`)
-			}
+			return decodeURI(this.$route.query.query)
 		}
 	},
 	async fetch() {
+		const query = this.$route.query
+
+		if (Object.keys(this.$route.query).length === 0) {
+			this.$router.replace({
+				path: `${this.$route.path}?page=1`
+			})
+		}
+
 		const apiKey = 'f19c666067ae31ab26cb6225b464a8dc'
-		const pageNumber = this.$route.query.page || 1
 		const encodedSearch = this.$route.query.q
-		const results = await this.$axios.get(
-			`/search/multi?api_key=${apiKey}&language=en&query=${encodedSearch}&page=${pageNumber}`
-		)
-		this.results = results.data.results
-		this.totalPages = results.data.total_pages
+		const searchData = await this.$axios.get(`/search/multi`, {
+			params: {
+				api_key: apiKey,
+				language: 'en',
+				...query
+			}
+		})
+
+		const results = searchData.data.results
+
+		this.results = list.results(results)
+		this.totalPages = searchData.data.total_pages
 	},
 	watch: {
 		'$route.query': '$fetch'
 	},
 	components: {
-		'app-list-item': AppListItem
+		'app-list-item': AppListItem,
+		'app-pagination': AppPagination
 	},
 	head() {
 		return {
-			title: decodeURI(this.$route.query.q)
-				? `${decodeURI(this.$route.query.q)} - Search - MovieDB`
+			title: decodeURI(this.$route.query.query)
+				? `${decodeURI(this.$route.query.query)} - Search - MovieDB`
 				: 'Search - MovieDB'
 		}
 	}

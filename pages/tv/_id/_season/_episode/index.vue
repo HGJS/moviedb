@@ -34,7 +34,7 @@
 						<div class="row">
 							<div class="col-12 mb-30">
 								<h1 class="page-banner__title">
-									{{ episode.name }}
+									{{ episode.name }} - {{ show.name }}
 								</h1>
 								<div class="page-banner__content-area">
 									<template v-if="episode.overview">
@@ -45,22 +45,20 @@
 									</template>
 									<p class="page-banner__rating">
 										<span class="page-banner__rating-box">{{
-											Number.parseFloat(
-												episode.vote_average
-											).toFixed(1)
+											episode.voteAverage
 										}}</span>
 										based on
-										{{ episode.vote_count }}
+										{{ episode.voteCount }}
 										reviews
 									</p>
-									<template v-if="episode.air_date">
+									<template v-if="episode.airDate">
 										<h2>Air Date</h2>
-										<p>{{ episode.air_date }}</p>
+										<p>{{ episode.airDate }}</p>
 									</template>
 									<p>
 										<nuxt-link
 											:to="
-												`/tv/${show.id}/${season.season_number}`
+												`/tv/${show.id}/${season.seasonNumber}`
 											"
 										>
 											Back to {{ show.name }}
@@ -89,9 +87,9 @@
 					<app-items-slider slideOrientation="landscape">
 						<app-images-slider-item
 							v-for="(image, index) in episode.images"
-							:key="image.file_path"
+							:key="image.imagePath"
 							:image="
-								`https://image.tmdb.org/t/p/w1280/${image.file_path}`
+								`https://image.tmdb.org/t/p/w1280/${image.imagePath}`
 							"
 							@click="openEpisodeGallery(index)"
 							orientation="landscape"
@@ -107,12 +105,12 @@
 					<h2 class="section-title">Cast</h2>
 					<app-items-slider slideOrientation="portrait">
 						<app-list-item
-							v-for="item in episode.cast"
-							:key="item.id"
-							:id="item.id"
-							:image="item.profile_path"
-							:name="item.name"
-							:character="item.character"
+							v-for="person in episode.cast"
+							:key="person.id"
+							:id="person.id"
+							:image="person.imagePath"
+							:name="person.name"
+							:character="person.character"
 							mediaType="person"
 							:sliderItem="true"
 							orientation="portrait"
@@ -130,12 +128,12 @@
 					<h2 class="section-title">Guest Stars</h2>
 					<app-items-slider slideOrientation="portrait">
 						<app-list-item
-							v-for="item in episode.guestStars"
-							:key="item.id"
-							:id="item.id"
-							:image="item.profile_path"
-							:name="item.name"
-							:character="item.character"
+							v-for="person in episode.guestStars"
+							:key="person.id"
+							:id="person.id"
+							:image="person.imagePath"
+							:name="person.name"
+							:character="person.character"
 							mediaType="person"
 							:sliderItem="true"
 							orientation="portrait"
@@ -146,24 +144,20 @@
 
 			<div
 				class="pt-60 pb-30  info-section"
-				v-if="otherEpisodes.length > 0"
+				v-if="season.episodes.length > 0"
 			>
 				<div class="container-fluid app-container-fluid">
 					<h2 class="section-title">Other Episodes</h2>
 					<app-items-slider slideOrientation="landscape">
 						<app-list-item
-							v-for="item in otherEpisodes"
-							:key="item.id"
+							v-for="episode in season.episodes"
+							:key="episode.id"
 							:id="show.id"
-							:image="
-								item.still_path ||
-									item.poster_path ||
-									item.profile_path
-							"
-							:name="item.title || item.name"
+							:image="episode.imagePath"
+							:name="episode.name"
 							mediaType="tv-episode"
-							:season="season.season_number"
-							:episode="item.episode_number"
+							:season="season.seasonNumber"
+							:episode="episode.episodeNumber"
 							:sliderItem="true"
 							orientation="landscape"
 						/>
@@ -187,34 +181,20 @@
 import AppListItem from '@/components/AppListItem'
 import AppItemsSlider from '@/components/AppItemsSlider'
 import AppImagesSliderItem from '@/components/AppImagesSliderItem'
+import list from '~/assets/js/list'
 
 export default {
 	data() {
 		return {
-			show: [],
-			season: [],
 			episode: [],
-			otherEpisodes: []
+			season: [],
+			show: []
 		}
 	},
 	async fetch() {
 		const apiKey = 'f19c666067ae31ab26cb6225b464a8dc'
 
-		const show = await this.$axios
-			.get(`/tv/${this.$route.params.id}?api_key=${apiKey}&language=en`)
-			.catch(err => {
-				console.log(err)
-			})
-
-		const season = await this.$axios
-			.get(
-				`/tv/${this.$route.params.id}/season/${this.$route.params.season}?api_key=${apiKey}&language=en`
-			)
-			.catch(err => {
-				console.log(err)
-			})
-
-		const episode = await this.$axios
+		const episodeData = await this.$axios
 			.get(
 				`/tv/${this.$route.params.id}/season/${this.$route.params.season}/episode/${this.$route.params.episode}?api_key=${apiKey}&language=en&append_to_response=credits,images`
 			)
@@ -222,26 +202,56 @@ export default {
 				console.log(err)
 			})
 
-		this.season = season.data
-		this.show = show.data
-		this.episode = episode.data
-		this.episode.images = episode.data.images.stills
-		this.episode.cast = episode.data.credits.cast.splice(0, 20)
-		this.episode.guestStars = episode.data.credits.guest_stars.splice(0, 20)
-		this.episode.gallery = []
-
-		for (const image of this.episode.images) {
-			this.episode.gallery.push({
-				src: `https://image.tmdb.org/t/p/w1280/${image.file_path}`
+		const seasonData = await this.$axios
+			.get(
+				`/tv/${this.$route.params.id}/season/${this.$route.params.season}?api_key=${apiKey}&language=en`
+			)
+			.catch(err => {
+				console.log(err)
 			})
+
+		const showData = await this.$axios
+			.get(`/tv/${this.$route.params.id}?api_key=${apiKey}&language=en`)
+			.catch(err => {
+				console.log(err)
+			})
+
+		//EPISODE DATA
+		const episode = episodeData.data
+
+		this.episode = {
+			id: episode.id,
+			name: episode.name,
+			overview: episode.overview,
+			voteAverage: Number.parseFloat(episode.vote_average).toFixed(1),
+			voteCount: episode.vote_count,
+			airDate: episode.air_date,
+			images: list.images(episode.images.stills),
+			cast: list.people(episode.credits.cast.slice(0, 20)),
+			guestStars: list.people(episode.credits.guest_stars.slice(0, 20)),
+			gallery: list.gallery(episode.images.stills),
+			episodeNumber: episode.episode_number,
+			backgroundImage: episode.still_path
 		}
 
-		const currentEpisodeNumber = this.episode.episode_number
-		const seasonEpisodes = season.data.episodes
+		//SEASON DATA
+		const season = seasonData.data
 
-		this.otherEpisodes = seasonEpisodes.filter(
-			item => item.episode_number !== currentEpisodeNumber
-		)
+		this.season = {
+			id: season.id,
+			name: season.name,
+			seasonNumber: season.season_number,
+			episodes: list.episodes(season.episodes, this.episode.episodeNumber)
+		}
+
+		//SHOW DATA
+		const show = showData.data
+
+		this.show = {
+			id: show.id,
+			name: show.name,
+			backgroundImage: show.backdrop_path
+		}
 	},
 	validate({ params }) {
 		return /^\d+$/.test(params.id)
@@ -261,13 +271,13 @@ export default {
 	},
 	computed: {
 		hasBackgroundImage() {
-			return this.episode.still_path || this.show.backdrop_path
+			return this.episode.backgroundImage || this.show.backgroundImage
 		},
 		showBackgroundImage() {
-			if (this.episode.still_path) {
-				return `background-image:url('https://image.tmdb.org/t/p/w1280/${this.episode.still_path}')`
-			} else if (this.show.backdrop_path) {
-				return `background-image:url('https://image.tmdb.org/t/p/w1280/${this.show.backdrop_path}')`
+			if (this.episode.backgroundImage) {
+				return `background-image:url('https://image.tmdb.org/t/p/w1280/${this.episode.backgroundImage}')`
+			} else if (this.show.backgroundImage) {
+				return `background-image:url('https://image.tmdb.org/t/p/w1280/${this.show.backgroundImage}')`
 			}
 			return ''
 		}

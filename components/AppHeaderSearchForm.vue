@@ -20,7 +20,7 @@ export default {
 	methods: {
 		processSearch() {
 			const searchTerms = this.$refs.searchTerms.value
-			this.$router.push(`/search?q=${encodeURI(searchTerms)}`)
+			this.$router.push(`/search?page=1&query=${encodeURI(searchTerms)}`)
 			this.$refs.searchTerms.value = ''
 			this.$emit('processSearch')
 		}

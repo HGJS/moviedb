@@ -63,18 +63,14 @@
 					<h2 class="section-title">Episodes</h2>
 					<app-items-slider slideOrientation="landscape">
 						<app-list-item
-							v-for="item in season.episodes"
-							:key="item.id"
+							v-for="episode in season.episodes"
+							:key="episode.id"
 							:id="show.id"
-							:image="
-								item.still_path ||
-									item.poster_path ||
-									item.profile_path
-							"
-							:name="item.title || item.name"
+							:image="episode.imagePath"
+							:name="episode.name"
 							mediaType="tv-episode"
-							:season="season.season_number"
-							:episode="item.episode_number"
+							:season="season.seasonNumber"
+							:episode="episode.episodeNumber"
 							:sliderItem="true"
 							orientation="landscape"
 						/>
@@ -89,24 +85,24 @@
 import AppListItem from '@/components/AppListItem'
 import AppItemsSlider from '@/components/AppItemsSlider'
 import AppImagesSliderItem from '@/components/AppImagesSliderItem'
-
+import list from '~/assets/js/list'
 export default {
 	data() {
 		return {
-			show: [],
-			season: []
+			show: {},
+			season: {}
 		}
 	},
 	async fetch() {
 		const apiKey = 'f19c666067ae31ab26cb6225b464a8dc'
 
-		const show = await this.$axios
+		const showData = await this.$axios
 			.get(`/tv/${this.$route.params.id}?api_key=${apiKey}&language=en`)
 			.catch(err => {
 				console.log(err)
 			})
 
-		const season = await this.$axios
+		const seasonData = await this.$axios
 			.get(
 				`/tv/${this.$route.params.id}/season/${this.$route.params.season}?api_key=${apiKey}&language=en`
 			)
@@ -114,9 +110,23 @@ export default {
 				console.log(err)
 			})
 
-		this.season = season.data
-		this.season.episodes = season.data.episodes
-		this.show = show.data
+		const show = showData.data
+
+		this.show = {
+			id: show.id,
+			name: show.name,
+			backgroundImage: show.backdrop_path
+		}
+
+		const season = seasonData.data
+
+		this.season = {
+			id: season.id,
+			name: season.name,
+			overview: season.overview,
+			seasonNumber: season.season_number,
+			episodes: list.episodes(season.episodes)
+		}
 	},
 	validate({ params }) {
 		return /^\d+$/.test(params.id)
@@ -131,11 +141,11 @@ export default {
 	},
 	computed: {
 		hasBackgroundImage() {
-			return this.show.backdrop_path
+			return this.show.backgroundImage
 		},
 		showBackgroundImage() {
-			if (this.show.backdrop_path) {
-				return `background-image:url('https://image.tmdb.org/t/p/w1280/${this.show.backdrop_path}')`
+			if (this.show.backgroundImage) {
+				return `background-image:url('https://image.tmdb.org/t/p/w1280/${this.show.backgroundImage}')`
 			}
 			return ''
 		}

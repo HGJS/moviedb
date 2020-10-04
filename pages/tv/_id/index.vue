@@ -33,12 +33,12 @@
 					<div class="container-fluid app-container-fluid">
 						<div class="row">
 							<div
-								v-if="show.poster_path"
+								v-if="show.posterImage"
 								class="col-12 col-md-4 mb-30"
 							>
 								<img
 									:src="
-										`https://image.tmdb.org/t/p/w780/${show.poster_path}`
+										`https://image.tmdb.org/t/p/w780/${show.posterImage}`
 									"
 									:alt="show.name"
 									class="img-fluid md-max-400"
@@ -46,7 +46,7 @@
 							</div>
 							<div
 								class="col-12 mb-30"
-								:class="{ 'col-md-8': show.poster_path }"
+								:class="{ 'col-md-8': show.posterImage }"
 							>
 								<h1 class="page-banner__title">
 									{{ show.name }}
@@ -60,23 +60,21 @@
 									<h2>Rating</h2>
 
 									<p class="page-banner__rating">
-										<span class="page-banner__rating-box">{{
-											Number.parseFloat(
-												show.vote_average
-											).toFixed(1)
-										}}</span>
-										based on {{ show.vote_count }} reviews
+										<span class="page-banner__rating-box">
+											{{ show.voteAverage }}
+										</span>
+										based on {{ show.voteCount }} reviews
 									</p>
 								</div>
 								<div class="row">
 									<div class="col-6">
 										<div class="page-banner__content-area">
 											<h2>First aired</h2>
-											<p>{{ show.first_air_date }}</p>
+											<p>{{ show.firstAirDate }}</p>
 											<h2>Number of Seasons</h2>
-											<p>{{ show.number_of_seasons }}</p>
+											<p>{{ show.numberOfSeasons }}</p>
 											<h2>Number of Episodes</h2>
-											<p>{{ show.number_of_episodes }}</p>
+											<p>{{ show.numberOfEpisodes }}</p>
 										</div>
 									</div>
 									<div class="col-6">
@@ -104,12 +102,12 @@
 					<h2 class="section-title">Seasons</h2>
 					<app-items-slider slideOrientation="portrait">
 						<app-list-item
-							v-for="item in show.seasons"
-							:key="item.id"
+							v-for="season in show.seasons"
+							:key="season.id"
 							:id="show.id"
-							:image="item.poster_path || item.profile_path"
-							:name="item.title || item.name"
-							:season="item.season_number"
+							:image="season.imagePath"
+							:name="season.name"
+							:season="season.seasonNumber"
 							mediaType="tv-season"
 							:sliderItem="true"
 							orientation="portrait"
@@ -119,7 +117,9 @@
 			</div>
 
 			<div
-				v-if="show.posters.length || show.backdrops.length"
+				v-if="
+					show.images.posters.length || show.images.backdrops.length
+				"
 				class="pt-60 pb-30 info-section"
 			>
 				<div class="container-fluid app-container-fluid">
@@ -132,7 +132,7 @@
 						<div class="app-col items__controls-col mb-30">
 							<div class="d-flex">
 								<button
-									v-if="show.posters.length"
+									v-if="show.images.posters.length"
 									:class="{ active: imageTypes == 'posters' }"
 									@click="imageTypes = 'posters'"
 									class="button"
@@ -140,7 +140,7 @@
 									Posters
 								</button>
 								<button
-									v-if="show.backdrops.length"
+									v-if="show.images.backdrops.length"
 									:class="{
 										active: imageTypes == 'backdrops'
 									}"
@@ -165,9 +165,9 @@
 								<app-images-slider-item
 									v-for="(image, index) in show.images
 										.posters"
-									:key="image.file_path"
+									:key="image.imagePath"
 									:image="
-										`https://image.tmdb.org/t/p/w780/${image.file_path}`
+										`https://image.tmdb.org/t/p/w780/${image.imagePath}`
 									"
 									@click="openPosterGallery(index)"
 									orientation="portrait"
@@ -188,9 +188,9 @@
 								<app-images-slider-item
 									v-for="(image, index) in show.images
 										.backdrops"
-									:key="image.file_path"
+									:key="image.imagePath"
 									:image="
-										`https://image.tmdb.org/t/p/w1280/${image.file_path}`
+										`https://image.tmdb.org/t/p/w1280/${image.imagePath}`
 									"
 									@click="openBackdropGallery(index)"
 									orientation="landscape"
@@ -204,17 +204,17 @@
 					</transition>
 				</div>
 			</div>
-			<div v-if="show.videosList.length" class="pt-60 pb-30 info-section">
+			<div v-if="show.videos.length" class="pt-60 pb-30 info-section">
 				<div class="container-fluid app-container-fluid">
 					<h2 class="section-title">Videos</h2>
 					<app-items-slider slideOrientation="landscape">
 						<app-list-item
-							v-for="item in show.videosList"
-							:key="item.id"
-							:id="item.id"
-							:videoKey="item.videoKey"
-							:image="item.image"
-							:name="item.name"
+							v-for="video in show.videos"
+							:key="video.id"
+							:id="video.id"
+							:videoKey="video.videoKey"
+							:image="video.imagePath"
+							:name="video.name"
 							mediaType="youTube"
 							:sliderItem="true"
 							orientation="landscape"
@@ -228,12 +228,12 @@
 					<h2 class="section-title">Cast</h2>
 					<app-items-slider slideOrientation="portrait">
 						<app-list-item
-							v-for="item in show.cast"
-							:key="item.id"
-							:id="item.id"
-							:image="item.profile_path"
-							:name="item.name"
-							:character="item.character"
+							v-for="person in show.cast"
+							:key="person.id"
+							:id="person.id"
+							:image="person.imagePath"
+							:name="person.name"
+							:character="person.character"
 							mediaType="person"
 							:sliderItem="true"
 							orientation="portrait"
@@ -248,11 +248,11 @@
 					<h2 class="section-title">Similar</h2>
 					<app-items-slider slideOrientation="portrait">
 						<app-list-item
-							v-for="item in show.similar"
-							:key="item.id"
-							:id="item.id"
-							:image="item.poster_path || item.profile_path"
-							:name="item.title || item.name"
+							v-for="show in show.similar"
+							:key="show.id"
+							:id="show.id"
+							:image="show.imagePath"
+							:name="show.name"
 							mediaType="tv"
 							:sliderItem="true"
 							orientation="portrait"
@@ -262,18 +262,18 @@
 			</div>
 			<client-only>
 				<app-light-box
-					:media="show.posters"
+					:media="show.gallery.posters"
 					:showThumbs="false"
 					:showLightBox="false"
 					ref="posterGallery"
-					v-if="show.posters"
+					v-if="show.gallery.posters.length"
 				/>
 				<app-light-box
-					:media="show.backdrops"
+					:media="show.gallery.backdrops"
 					:showThumbs="false"
 					:showLightBox="false"
 					ref="backdropGallery"
-					v-if="show.backdrops"
+					v-if="show.gallery.backdrops.length"
 				/>
 			</client-only>
 		</template>
@@ -284,6 +284,7 @@
 import AppListItem from '@/components/AppListItem'
 import AppItemsSlider from '@/components/AppItemsSlider'
 import AppImagesSliderItem from '@/components/AppImagesSliderItem'
+import list from '~/assets/js/list'
 
 export default {
 	data() {
@@ -296,7 +297,7 @@ export default {
 	async fetch() {
 		const youTubeApiKey = 'AIzaSyCQILg2l5LOJYF7A7X67R9Ety8kPpuv-qA'
 		const apiKey = 'f19c666067ae31ab26cb6225b464a8dc'
-		const show = await this.$axios
+		const showData = await this.$axios
 			.get(
 				`/tv/${this.$route.params.id}?api_key=${apiKey}&language=en&include_image_language=en&append_to_response=images,videos,credits,similar`
 			)
@@ -304,77 +305,47 @@ export default {
 				console.log(err)
 			})
 
-		this.show = show.data
-		this.show.seasons = show.data.seasons
-		this.show.images = show.data.images
-		this.show.cast = show.data.credits.cast.splice(0, 20)
-		this.show.similar = show.data.similar.results
-		this.show.backdrops = []
-		this.show.posters = []
-		this.show.videosList = []
+		const show = showData.data
 
-		for (const image of this.show.images.backdrops) {
-			this.show.backdrops.push({
-				src: `https://image.tmdb.org/t/p/w1280/${image.file_path}`
+		const videosData = await this.$axios
+			.get(
+				`https://www.googleapis.com/youtube/v3/videos?key=${youTubeApiKey}&part=snippet&id=${list.videoKeys(
+					show.videos.results
+				)}`
+			)
+			.catch(err => {
+				console.log(err)
 			})
-		}
 
-		for (const image of this.show.images.posters) {
-			this.show.posters.push({
-				src: `https://image.tmdb.org/t/p/w780/${image.file_path}`
-			})
-		}
+		const videos = videosData.data
 
-		if (show.data.videos.results.length) {
-			const videoKeys = []
-			for (const video of show.data.videos.results) {
-				if (video.site == 'YouTube' && video.type != 'Bloopers') {
-					videoKeys.push(video.key)
-				}
-			}
-
-			const youTubeVideos = await this.$axios
-				.get(
-					`https://www.googleapis.com/youtube/v3/videos?key=${youTubeApiKey}&part=snippet&id=${videoKeys.join()}`
-				)
-				.catch(err => {
-					console.log(err)
-					this.showVideoFallback = true
-				})
-			if (!this.showVideoFallback) {
-				for (const video of youTubeVideos.data.items) {
-					function getThumbnail() {
-						const thumbnailsObject = video.snippet.thumbnails
-						const sortedThumbnails = Object.keys(
-							thumbnailsObject
-						).sort(function(a, b) {
-							return (
-								thumbnailsObject[b].width -
-								thumbnailsObject[a].width
-							)
-						})
-
-						const thumbnailSize = sortedThumbnails[0]
-
-						return thumbnailsObject[thumbnailSize].url
-					}
-					this.show.videosList.push({
-						id: video.id,
-						videoKey: video.id,
-						name: video.snippet.title,
-						image: getThumbnail()
-					})
-				}
-			} else {
-				for (const video of this.show.videos.results) {
-					this.show.videosList.push({
-						id: video.id,
-						videoKey: video.key,
-						name: video.name,
-						image: ''
-					})
-				}
-			}
+		this.show = {
+			id: show.id,
+			name: show.name,
+			overview: show.overview,
+			posterImage: show.poster_path,
+			voteAverage: Number.parseFloat(show.vote_average).toFixed(1),
+			voteCount: show.vote_count,
+			numberOfSeasons: show.number_of_seasons,
+			numberOfEpisodes: show.number_of_episodes,
+			firstAirDate: show.first_air_date,
+			cast: list.people(show.credits.cast.slice(0, 20)),
+			images: {
+				posters: list.images(show.images.posters),
+				backdrops: list.images(show.images.backdrops)
+			},
+			gallery: {
+				posters: list.gallery(show.images.posters),
+				backdrops: list.gallery(show.images.backdrops)
+			},
+			backgroundImage: show.backdrop_path,
+			productionCompanies: list.productionCompanies(
+				show.production_companies
+			),
+			seasons: list.seasons(show.seasons),
+			similar: list.shows(show.similar.results),
+			genres: list.genres(show.genres),
+			videos: list.videos(videos.items)
 		}
 	},
 	methods: {
@@ -387,11 +358,11 @@ export default {
 	},
 	computed: {
 		hasBackgroundImage() {
-			return this.show.backdrop_path
+			return this.show.backgroundImage
 		},
 		showBackgroundImage() {
-			if (this.show.backdrop_path) {
-				return `background-image:url('https://image.tmdb.org/t/p/w1280/${this.show.backdrop_path}')`
+			if (this.show.backgroundImage) {
+				return `background-image:url('https://image.tmdb.org/t/p/w1280/${this.show.backgroundImage}')`
 			}
 			return ''
 		}

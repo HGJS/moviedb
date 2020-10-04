@@ -1,7 +1,7 @@
 <template>
 	<div
 		:class="{
-			'col-6 col-sm-6 col-md-3': !sliderItem,
+			'col-6 col-md-3': !sliderItem,
 			'col slider-item': sliderItem
 		}"
 		class="mb-30 list-item"
@@ -24,6 +24,9 @@
 				<h3 class="list-item__link-title">{{ name }}</h3>
 				<p v-if="character" class="list-item__link-title">
 					{{ character }}
+				</p>
+				<p v-if="releaseYear" class="list-item__link-title">
+					{{ releaseYear }}
 				</p>
 			</nuxt-link>
 		</template>
@@ -62,6 +65,9 @@ export default {
 		name: {
 			type: [String, undefined, null],
 			required: true
+		},
+		releaseDate: {
+			type: [String, undefined, null]
 		},
 		character: {
 			type: String
@@ -142,6 +148,9 @@ export default {
 				error: errorImagePath(),
 				loading: loadingImagePath()
 			}
+		},
+		releaseYear() {
+			return new Date(this.releaseDate).getFullYear()
 		},
 		itemLink() {
 			switch (this.mediaType) {
