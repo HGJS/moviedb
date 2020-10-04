@@ -8,12 +8,14 @@
 			</div>
 		</div>
 		<div v-else-if="$fetchState.error">
-			<h1 class="page-title">Error</h1>
-			<div class="content-area">
-				<p class="mb-30">
-					There was an error fetching content.
-				</p>
-				<nuxt-link class="button" to="/">Home</nuxt-link>
+			<div class="container-fluid app-container-fluid">
+				<h1 class="page-title">Error</h1>
+				<div class="content-area">
+					<p class="mb-30">
+						There was an error fetching content.
+					</p>
+					<nuxt-link class="button" to="/">Home</nuxt-link>
+				</div>
 			</div>
 		</div>
 		<div v-else class="container-fluid app-container-fluid">
