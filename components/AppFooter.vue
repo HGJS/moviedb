@@ -2,7 +2,14 @@
 	<footer class="app-footer">
 		<div class="container-fluid app-container-fluid">
 			<p class="mb-15">
-				By Sam Hellewell
+				By
+				<a
+					href="https://samhellewell.me/"
+					class="app-footer__link"
+					target="_blank"
+					rel="noopener"
+					>Sam Hellewell</a
+				>
 			</p>
 			<p class="mb-15">
 				<a
