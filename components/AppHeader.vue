@@ -4,7 +4,11 @@
 			<div class="container-fluid app-container-fluid">
 				<div class="row app-header__row">
 					<div class="app-col app-header__logo-col">
-						<a href="/" class="app-header__logo-link">
+						<nuxt-link
+							to="/"
+							class="app-header__logo-link"
+							@click.native="hideSearch"
+						>
 							<img
 								src="/logo.svg"
 								alt="MovieDB"
@@ -12,7 +16,7 @@
 								height="16"
 								class="app-header__logo"
 							/>
-						</a>
+						</nuxt-link>
 					</div>
 					<div class="app-col app-header__nav-col">
 						<div class="app-header__nav-wrap">
@@ -21,6 +25,7 @@
 									<nuxt-link
 										to="/movies"
 										class="app-header__nav-link"
+										@click.native="hideSearch"
 										>Movies</nuxt-link
 									>
 								</li>
@@ -28,6 +33,7 @@
 									<nuxt-link
 										to="/tv"
 										class="app-header__nav-link"
+										@click.native="hideSearch"
 										>TV Shows</nuxt-link
 									>
 								</li>
@@ -35,6 +41,7 @@
 									<nuxt-link
 										to="/people"
 										class="app-header__nav-link"
+										@click.native="hideSearch"
 										>People</nuxt-link
 									>
 								</li>

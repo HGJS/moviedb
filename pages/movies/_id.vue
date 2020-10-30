@@ -218,6 +218,7 @@
 									v-if="movie.homepage || movie.imdbId"
 									class="page-banner__content-area mb-20"
 								>
+									<h2>Links</h2>
 									<p v-if="movie.homepage">
 										<a
 											:href="movie.homepage"

@@ -171,7 +171,7 @@ export default {
 		this.filterVideos(videos)
 		const videoKeys = []
 
-		for (const video of videos) {
+		for (const video of videos.slice(0, 20)) {
 			videoKeys.push(video.key)
 		}
 
