@@ -16,17 +16,41 @@
 				</div>
 			</div>
 			<template v-else>
-				<h1 class="page-title">TV Shows</h1>
+				<app-filters type="tv" :filterOptions="filterOptions" />
+
+				<div class="row align-items-center">
+					<div class="app-col page-title-col">
+						<h1 class="page-title">TV Shows</h1>
+					</div>
+					<div class="app-col">
+						<button
+							@click="onShowFiltersClick"
+							class="button button--wide mb-30"
+						>
+							Show Filters
+						</button>
+					</div>
+				</div>
 				<div class="row">
-					<app-list-item
-						v-for="show in shows"
-						:key="show.id"
-						:id="show.id"
-						:image="show.imagePath"
-						:name="show.name"
-						mediaType="tv"
-						orientation="portrait"
-					/>
+					<div class="col-12">
+						<template v-if="shows.length">
+							<div class="row">
+								<app-list-item
+									v-for="show in shows"
+									:key="show.id"
+									:id="show.id"
+									:image="show.imagePath"
+									:name="show.name"
+									mediaType="tv"
+									:releaseDate="show.releaseDate"
+									orientation="portrait"
+								/>
+							</div>
+						</template>
+						<div v-else class="content-area mb-30">
+							<p>No results found.</p>
+						</div>
+					</div>
 				</div>
 				<app-pagination routeName="tv" :totalPages="totalPages" />
 			</template>
@@ -35,6 +59,7 @@
 </template>
 
 <script>
+import AppFilters from '@/components/AppFilters'
 import AppListItem from '@/components/AppListItem'
 import AppPagination from '@/components/AppPagination'
 import list from '~/assets/js/list'
@@ -45,7 +70,30 @@ export default {
 		return {
 			shows: [],
 			totalPages: 1,
-			hasError: false
+			hasError: false,
+			filterOptions: {
+				sort_by: [
+					{
+						value: 'popularity.desc',
+						title: 'Popularity Descending'
+					},
+					{
+						value: 'popularity.asc',
+						title: 'Popularity Ascending'
+					},
+					{
+						value: 'primary_release_date.desc',
+						title: 'Release Date Descending'
+					},
+					{
+						value: 'primary_release_date.asc',
+						title: 'Release Date Ascending'
+					}
+				],
+				with_genres: []
+				// certification_country: 'GB',
+				// certifications: []
+			}
 		}
 	},
 	async fetch() {
@@ -62,7 +110,7 @@ export default {
 		}
 
 		const showsData = await this.$axios
-			.get(`/tv/popular`, {
+			.get(`/discover/tv`, {
 				params: {
 					api_key: apiKey,
 					language: 'en',
@@ -77,11 +125,52 @@ export default {
 
 		this.shows = list.shows(shows)
 		this.totalPages = showsData.data.total_pages
+
+		const genresList = await this.$axios
+			.get(`/genre/tv/list`, {
+				params: {
+					api_key: apiKey,
+					language: 'en'
+				}
+			})
+			.catch(err => {
+				this.hasError = true
+			})
+
+		this.filterOptions.with_genres = genresList.data.genres
+
+		// const certificationsList = await this.$axios
+		// 	.get(`/certification/tv/list`, {
+		// 		params: {
+		// 			api_key: apiKey,
+		// 			language: 'en'
+		// 		}
+		// 	})
+		// 	.catch(err => {
+		// 		this.hasError = true
+		// 	})
+
+		// const unsortedCertifications =
+		// 	certificationsList.data.certifications[
+		// 		this.filterOptions.certification_country
+		// 	]
+
+		// const sortedCertifications = unsortedCertifications.sort(
+		// 	(a, b) => a.order - b.order
+		// )
+
+		// this.filterOptions.certifications = sortedCertifications
+	},
+	methods: {
+		onShowFiltersClick() {
+			this.$nuxt.$emit('onShowFiltersClick')
+		}
 	},
 	watch: {
 		'$route.query': '$fetch'
 	},
 	components: {
+		'app-filters': AppFilters,
 		'app-list-item': AppListItem,
 		'app-pagination': AppPagination
 	},

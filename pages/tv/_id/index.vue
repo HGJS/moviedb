@@ -48,17 +48,28 @@
 								class="col-12 mb-30"
 								:class="{ 'col-md-8': show.posterImage }"
 							>
-								<h1 class="page-banner__title">
-									{{ show.name }}
+								<h1
+									class="page-banner__title"
+									:class="{
+										'page-banner__title--has-certification':
+											show.certification
+									}"
+								>
+									<span class="page-banner__title-text">
+										{{ show.name }}
+									</span>
+									<span
+										v-if="show.certification"
+										class="page-banner__certification-box"
+									>
+										{{ show.certification }}
+									</span>
 								</h1>
-								<div class="page-banner__content-area mb-20">
-									<h2>Overview</h2>
-									<p
-										class="page-banner__desc"
-										v-html="show.overview"
-									></p>
+								<div
+									v-if="show.voteCount"
+									class="page-banner__content-area mb-20"
+								>
 									<h2>Rating</h2>
-
 									<p class="page-banner__rating">
 										<span class="page-banner__rating-box">
 											{{ show.voteAverage }}
@@ -66,11 +77,24 @@
 										based on {{ show.voteCount }} reviews
 									</p>
 								</div>
+								<div class="page-banner__content-area mb-20">
+									<h2>Overview</h2>
+									<p
+										class="page-banner__desc"
+										v-html="show.overview"
+									></p>
+								</div>
 								<div class="row">
 									<div class="col-6">
 										<div class="page-banner__content-area">
 											<h2>First aired</h2>
-											<p>{{ show.firstAirDate }}</p>
+											<p>
+												{{
+													formatDate(
+														show.firstAirDate
+													)
+												}}
+											</p>
 											<h2>Number of Seasons</h2>
 											<p>{{ show.numberOfSeasons }}</p>
 											<h2>Number of Episodes</h2>
@@ -85,7 +109,21 @@
 													v-for="genre in show.genres"
 													:key="genre.id"
 												>
-													{{ genre.name }}
+													<nuxt-link
+														:to="{
+															name: 'tv',
+															query: {
+																page: 1,
+																sort_by:
+																	'popularity.desc',
+																with_genres:
+																	genre.id
+															}
+														}"
+														>{{
+															genre.name
+														}}</nuxt-link
+													>
 												</li>
 											</ul>
 										</div>
@@ -255,6 +293,7 @@
 							:name="show.name"
 							mediaType="tv"
 							:sliderItem="true"
+							:releaseDate="show.releaseDate"
 							orientation="portrait"
 						/>
 					</app-items-slider>
@@ -299,7 +338,7 @@ export default {
 		const apiKey = 'f19c666067ae31ab26cb6225b464a8dc'
 		const showData = await this.$axios
 			.get(
-				`/tv/${this.$route.params.id}?api_key=${apiKey}&language=en&include_image_language=en&append_to_response=images,videos,credits,similar`
+				`/tv/${this.$route.params.id}?api_key=${apiKey}&language=en&include_image_language=en&append_to_response=images,videos,credits,similar,release_dates`
 			)
 			.catch(err => {
 				console.log(err)
@@ -318,6 +357,16 @@ export default {
 			})
 
 		const videos = videosData.data
+
+		const certificationsData = await this.$axios
+			.get(
+				`/tv/${this.$route.params.id}/content_ratings?api_key=${apiKey}&language=en`
+			)
+			.catch(err => {
+				console.log(err)
+			})
+
+		const certifications = certificationsData.data.results
 
 		this.show = {
 			id: show.id,
@@ -345,7 +394,8 @@ export default {
 			seasons: list.seasons(show.seasons),
 			similar: list.shows(show.similar.results),
 			genres: list.genres(show.genres),
-			videos: list.videos(videos.items)
+			videos: list.videos(videos.items),
+			certification: list.tvCertifications(certifications)
 		}
 	},
 	methods: {
@@ -354,6 +404,10 @@ export default {
 		},
 		openBackdropGallery(index) {
 			this.$refs.backdropGallery.showImage(index)
+		},
+		formatDate(date) {
+			const dateString = new Date(date)
+			return dateString.toLocaleDateString()
 		}
 	},
 	computed: {

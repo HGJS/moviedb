@@ -1,3 +1,5 @@
+import webpack from 'webpack'
+
 export default {
 	mode: 'spa',
 	/*
@@ -44,9 +46,8 @@ export default {
 	 ** Plugins to load before mounting the App
 	 */
 	plugins: [
-		{
-			src: '~/plugins/lightbox.client.js'
-		}
+		{ src: '~/plugins/lightbox.client.js' },
+		{ src: '~/plugins/vue-touch.client.js' }
 	],
 	/*
 	 ** Nuxt.js dev-modules
@@ -83,6 +84,11 @@ export default {
 		/*
 		 ** You can extend webpack config here
 		 */
+		plugins: [
+			new webpack.ProvidePlugin({
+				_: 'lodash'
+			})
+		],
 		extend(config, ctx) {}
 	}
 }

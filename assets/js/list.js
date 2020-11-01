@@ -65,7 +65,8 @@ export default {
 				id: result.id,
 				name: result.title || result.name,
 				imagePath: result.poster_path || result.profile_path,
-				mediaType: result.media_type
+				mediaType: result.media_type,
+				releaseDate: result.release_date || result.first_air_date
 			})
 		}
 		return resultsArray
@@ -94,7 +95,8 @@ export default {
 			const entry = {
 				id: show.id,
 				name: show.name,
-				imagePath: show.poster_path
+				imagePath: show.poster_path,
+				releaseDate: show.first_air_date
 			}
 			if (credit) {
 				entry.character = show.character
@@ -153,6 +155,29 @@ export default {
 			})
 		}
 		return countriesArray
+	},
+
+	movieCertifications(releaseDates) {
+		const gbIndex = releaseDates.results.findIndex(el => el.iso_3166_1 === 'GB')
+		if (gbIndex !== -1) {
+			const certificationIndex = releaseDates.results[gbIndex].release_dates.findIndex(el => el.certification !== '')
+			if(certificationIndex !== -1) {
+				const certification = releaseDates.results[gbIndex].release_dates[certificationIndex].certification
+				return certification
+			}
+		}
+		return ''
+	},
+
+	tvCertifications(certifications) {
+		const gbIndex = certifications.findIndex(el => el.iso_3166_1 === 'GB')
+		if(gbIndex !== - 1) {
+			const certification = certifications[gbIndex].rating;
+			if (certification) {
+				return certification
+			}
+		}
+		return ''
 	},
 
 	filterVideos(videos) {

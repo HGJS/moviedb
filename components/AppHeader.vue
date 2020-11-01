@@ -1,5 +1,5 @@
 <template>
-	<header v-click-outside="hideSearch" class="app-header">
+	<header class="app-header">
 		<div class="app-header__inner">
 			<div class="container-fluid app-container-fluid">
 				<div class="row app-header__row">
@@ -70,9 +70,7 @@
 			<div v-if="showSearch" class="app-header__search-form-wrap">
 				<div class="app-header__search-form-wrap-inner">
 					<div class="container-fluid  app-container-fluid">
-						<app-header-search-form
-							@processSearch="processSearch"
-						/>
+						<app-header-search-form />
 					</div>
 				</div>
 			</div>
@@ -81,9 +79,6 @@
 </template>
 
 <script>
-import ClickOutside from 'vue-click-outside'
-
-// import AppMenuDropdown from '@/components/AppMenuDropdown'
 import AppHeaderSearchForm from '@/components/AppHeaderSearchForm'
 
 export default {
@@ -94,13 +89,12 @@ export default {
 		}
 	},
 	methods: {
-		processSearch() {
-			this.showSearch = false
-		},
 		toggleSearch() {
 			this.showSearch = !this.showSearch
 			if (!this.showSearch) {
 				this.hideSearch()
+			} else {
+				this.$nuxt.$emit('showSearch')
 			}
 		},
 		hideSearch() {
@@ -108,19 +102,21 @@ export default {
 				this.showSearch = false
 				this.searchTerms = ''
 			}
-		},
-		handleDropdownToggle(dropdownShown) {
-			if (dropdownShown) {
-				this.hideSearch()
-			}
 		}
 	},
-	components: {
-		// 'app-menu-dropdown': AppMenuDropdown,
-		'app-header-search-form': AppHeaderSearchForm
+	created() {
+		this.$nuxt.$on('showFilters', () => {
+			this.hideSearch()
+		})
+		this.$nuxt.$on('processSearch', () => {
+			this.hideSearch()
+		})
+		this.$nuxt.$on('autoCompleteItemClick', () => {
+			this.hideSearch()
+		})
 	},
-	directives: {
-		ClickOutside
+	components: {
+		'app-header-search-form': AppHeaderSearchForm
 	}
 }
 </script>

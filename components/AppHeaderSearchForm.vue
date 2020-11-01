@@ -22,6 +22,7 @@
 			<div
 				class="dropdown-menu app-header__dropdown-menu"
 				:class="{ show: dropdownVisible }"
+				v-touch:swipe="blurInput"
 			>
 				<autocomplete-item
 					class="dropdown-item app-header__dropdown-item"
@@ -30,8 +31,9 @@
 					:id="suggestion.id"
 					:image="suggestion.imagePath"
 					:name="suggestion.name"
+					:releaseDate="suggestion.releaseDate"
 					:mediaType="suggestion.mediaType"
-					@clicked="onAutoCompleteItemClick"
+					@click.native="onAutoCompleteItemClick"
 				>
 				</autocomplete-item>
 			</div>
@@ -49,7 +51,8 @@ export default {
 			searchTerms: '',
 			timer: '',
 			dropdownVisible: false,
-			suggestions: []
+			suggestions: [],
+			popupItem: ''
 		}
 	},
 	components: {
@@ -90,7 +93,7 @@ export default {
 				`/search?page=1&query=${encodeURI(this.searchTerms)}`
 			)
 			this.searchTerms = ''
-			this.$emit('processSearch')
+			this.$nuxt.$emit('processSearch')
 		},
 		hideDropdown() {
 			this.dropdownVisible = false
@@ -104,17 +107,22 @@ export default {
 		},
 		onAutoCompleteItemClick() {
 			this.clearAutoComplete()
+			this.$nuxt.$emit('autoCompleteItemClick')
 		},
 		clearAutoComplete() {
 			this.hideDropdown()
 			this.searchTerms = ''
 			this.suggestions = []
+		},
+		blurInput() {
+			this.$refs.searchTerms.blur()
 		}
 	},
 	directives: {
 		ClickOutside
 	},
 	mounted() {
+		this.popupItem = this.$el
 		this.$refs.searchTerms.focus()
 	}
 }

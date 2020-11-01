@@ -182,15 +182,17 @@
 		width: 100%;
 		border-radius: 0;
 		border: 0;
-		padding: 10px;
+		padding: 10px 0;
 		margin: 0;
 		overflow-x: hidden;
 		flex-direction: column;
-		background-color: white;
+		background-color: $color-grey-light;
 		float: none;
-		max-height: calc(100vh - 150px);
+		top: calc(100% + 15px);
+		max-height: calc(100vh - 165px);
 		overflow-y: auto;
 		font-size: 14px;
+		background-clip: none;
 
 		&.show {
 			display: flex;
@@ -202,12 +204,11 @@
 		width: 100%;
 		display: flex;
 		align-items: center;
-		min-height: 60px;
 
 		&:hover,
 		&:active,
 		&:focus {
-			background-color: $color-grey-light;
+			background-color: transparent;
 			color: $color-blue-mid;
 		}
 	}
@@ -221,5 +222,6 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+		padding: 10px 0;
 	}
 }

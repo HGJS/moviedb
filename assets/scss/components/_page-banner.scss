@@ -44,6 +44,28 @@
 		margin-bottom: 30px;
 	}
 
+	&__title--has-certification {
+		display: flex;
+		align-items: flex-start;
+
+		.page-banner {
+			&__title-text {
+				margin-right: 15px;
+			}
+		}
+	}
+
+	&__certification-box {
+		display: inline-flex;
+		margin-right: 10px;
+		padding: 4px 10px;
+		font-size: 16px;
+		line-height: 30px;
+		background-color: transparent;
+		color: $color-white;
+		border: 1px solid $color-white;
+	}
+
 	&__image {
 		box-shadow: 5px 5px 5px rgba($color-black, 0.5);
 	}
@@ -58,7 +80,6 @@
 		margin-right: 10px;
 		padding: 5px 10px;
 		font-size: 22px;
-		// line-height: 1;
 		background-color: $color-white;
 		color: $color-blue-black;
 	}

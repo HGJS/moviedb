@@ -16,7 +16,21 @@
 				</div>
 			</div>
 			<template v-else>
-				<h1 class="page-title">Movies</h1>
+				<app-filters type="movie" :filterOptions="filterOptions" />
+
+				<div class="row align-items-center">
+					<div class="app-col page-title-col">
+						<h1 class="page-title">Movies</h1>
+					</div>
+					<div class="app-col">
+						<button
+							@click="onShowFiltersClick"
+							class="button button--wide mb-30"
+						>
+							Show Filters
+						</button>
+					</div>
+				</div>
 
 				<div class="row">
 					<div class="col-12">
@@ -29,6 +43,7 @@
 									:image="movie.imagePath"
 									:name="movie.name"
 									mediaType="movie"
+									:releaseDate="movie.releaseDate"
 									orientation="portrait"
 								/>
 							</div>
@@ -45,6 +60,7 @@
 </template>
 
 <script>
+import AppFilters from '@/components/AppFilters'
 import AppListItem from '@/components/AppListItem'
 import AppPagination from '@/components/AppPagination'
 import list from '~/assets/js/list'
@@ -55,7 +71,30 @@ export default {
 		return {
 			movies: [],
 			totalPages: 1,
-			hasError: false
+			hasError: false,
+			filterOptions: {
+				sort_by: [
+					{
+						value: 'popularity.desc',
+						title: 'Popularity Descending'
+					},
+					{
+						value: 'popularity.asc',
+						title: 'Popularity Ascending'
+					},
+					{
+						value: 'primary_release_date.desc',
+						title: 'Release Date Descending'
+					},
+					{
+						value: 'primary_release_date.asc',
+						title: 'Release Date Ascending'
+					}
+				],
+				with_genres: [],
+				certification_country: 'GB',
+				certifications: []
+			}
 		}
 	},
 	async fetch() {
@@ -87,11 +126,52 @@ export default {
 
 		this.movies = list.movies(movies)
 		this.totalPages = moviesData.data.total_pages
+
+		const genresList = await this.$axios
+			.get(`/genre/movie/list`, {
+				params: {
+					api_key: apiKey,
+					language: 'en'
+				}
+			})
+			.catch(err => {
+				this.hasError = true
+			})
+
+		this.filterOptions.with_genres = genresList.data.genres
+
+		const certificationsList = await this.$axios
+			.get(`/certification/movie/list`, {
+				params: {
+					api_key: apiKey,
+					language: 'en'
+				}
+			})
+			.catch(err => {
+				this.hasError = true
+			})
+
+		const unsortedCertifications =
+			certificationsList.data.certifications[
+				this.filterOptions.certification_country
+			]
+
+		const sortedCertifications = unsortedCertifications.sort(
+			(a, b) => a.order - b.order
+		)
+
+		this.filterOptions.certifications = sortedCertifications
+	},
+	methods: {
+		onShowFiltersClick() {
+			this.$nuxt.$emit('onShowFiltersClick')
+		}
 	},
 	watch: {
 		$route: '$fetch'
 	},
 	components: {
+		'app-filters': AppFilters,
 		'app-list-item': AppListItem,
 		'app-pagination': AppPagination
 	},

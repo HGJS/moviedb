@@ -48,8 +48,22 @@
 								class="col-12 mb-30"
 								:class="{ 'col-md-8': movie.posterImage }"
 							>
-								<h1 class="page-banner__title">
-									{{ movie.name }}
+								<h1
+									class="page-banner__title"
+									:class="{
+										'page-banner__title--has-certification':
+											movie.certification
+									}"
+								>
+									<span class="page-banner__title-text">
+										{{ movie.name }}
+									</span>
+									<span
+										v-if="movie.certification"
+										class="page-banner__certification-box"
+									>
+										{{ movie.certification }}
+									</span>
 								</h1>
 								<div
 									class="page-banner__content-area mb-20"
@@ -81,7 +95,9 @@
 										class="page-banner__content-area col-6 mb-20"
 									>
 										<h2>Release date</h2>
-										<p>{{ movie.releaseDate }}</p>
+										<p>
+											{{ formatDate(movie.releaseDate) }}
+										</p>
 									</div>
 									<div
 										v-if="movie.runtime"
@@ -111,7 +127,19 @@
 												v-for="genre in movie.genres"
 												:key="genre.id"
 											>
-												{{ genre.name }}
+												<nuxt-link
+													:to="{
+														name: 'movies',
+														query: {
+															page: 1,
+															sort_by:
+																'popularity.desc',
+															with_genres:
+																genre.id
+														}
+													}"
+													>{{ genre.name }}</nuxt-link
+												>
 											</li>
 										</ul>
 									</div>
@@ -429,7 +457,7 @@ export default {
 		const youTubeApiKey = 'AIzaSyCQILg2l5LOJYF7A7X67R9Ety8kPpuv-qA'
 		const movieData = await this.$axios
 			.get(
-				`/movie/${this.$route.params.id}?api_key=${apiKey}&language=en&include_image_language=en&append_to_response=images,videos,credits,similar`
+				`/movie/${this.$route.params.id}?api_key=${apiKey}&language=en&include_image_language=en&append_to_response=images,videos,credits,similar,release_dates`
 			)
 			.catch(err => {
 				console.log(err)
@@ -481,7 +509,8 @@ export default {
 			},
 			cast: list.people(movie.credits.cast.slice(0, 20)),
 			directors: list.directors(movie.credits.crew),
-			videos: list.videos(videos.items)
+			videos: list.videos(videos.items),
+			certification: list.movieCertifications(movie.release_dates)
 		}
 	},
 	methods: {
@@ -500,6 +529,11 @@ export default {
 			let minutesText = minutes != 0 ? `${minutes}m` : ''
 
 			return `${hoursText} ${minutesText}`
+		},
+
+		formatDate(date) {
+			const dateString = new Date(date)
+			return dateString.toLocaleDateString()
 		}
 	},
 	computed: {

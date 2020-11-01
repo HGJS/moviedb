@@ -38,6 +38,7 @@
 						:image="result.imagePath"
 						:name="result.name"
 						:mediaType="result.mediaType"
+						:releaseDate="result.releaseDate"
 						orientation="portrait"
 					/>
 				</div>

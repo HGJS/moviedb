@@ -1,10 +1,6 @@
 <template>
 	<div class="col image-slider-item">
-		<a
-			href="#"
-			@click.prevent="handleClick"
-			class="image-slider-item__link"
-		>
+		<a href="#" @click.prevent="onClick" class="image-slider-item__link">
 			<div
 				class="image-slider-item__link-image-wrap"
 				:class="{
@@ -41,7 +37,7 @@ export default {
 		}
 	},
 	methods: {
-		handleClick() {
+		onClick() {
 			this.$emit('click')
 		}
 	},
