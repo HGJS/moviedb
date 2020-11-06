@@ -1,7 +1,7 @@
 {
 	"name": "movie-database",
 	"version": "1.0.0",
-	"description": "MoveDB",
+	"description": "MovieDB",
 	"author": "Sam Hellewell",
 	"private": true,
 	"scripts": {
