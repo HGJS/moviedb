@@ -16,13 +16,13 @@
 				class="button items-slider__button items-slider__button--prev"
 				@click="showPrev"
 			>
-				<span class="fal fa-angle-left"></span>
+				<span class="fas fa-angle-left"></span>
 			</button>
 			<button
 				class="button items-slider__button items-slider__button--next"
 				@click="showNext"
 			>
-				<span class="fal fa-angle-right"></span>
+				<span class="fas fa-angle-right"></span>
 			</button>
 		</div>
 	</div>

@@ -3,7 +3,7 @@
 		<h2 class="filters__title">
 			Filter
 			<button class="filters__title-button button" @click="hideFilters">
-				<span class="fal fa-times"></span>
+				<span class="fas fa-times"></span>
 			</button>
 		</h2>
 		<div class="filters__group">

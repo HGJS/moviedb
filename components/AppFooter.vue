@@ -30,6 +30,16 @@
 				</a>
 			</p>
 			<p class="mb-15">
+				This site uses images/icons and fonts from
+				<a
+					href="https://fontawesome.com/license"
+					class="app-footer__link"
+					target="_blank"
+					rel="noopener"
+					>Font Awesome.</a
+				>
+			</p>
+			<p class="mb-15">
 				This product uses the TMDb API but is not endorsed or certified
 				by TMDb.
 			</p>

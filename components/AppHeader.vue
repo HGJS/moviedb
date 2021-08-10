@@ -59,7 +59,7 @@
 									'fa-times': showSearch,
 									'fa-search': !showSearch
 								}"
-								class="app-header__search-button-icon fal"
+								class="app-header__search-button-icon fa"
 							></span>
 						</button>
 					</div>
