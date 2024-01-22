@@ -20,14 +20,6 @@
 				>
 					<span class="fab fa-github"></span>
 				</a>
-				<a
-					href="https://www.linkedin.com/in/sam-hellewell-51a611253/"
-					class="app-footer__link app-footer__link--social"
-					target="_blank"
-					rel="noopener"
-				>
-					<span class="fab fa-linkedin"></span>
-				</a>
 			</p>
 			<p class="mb-15">
 				This site uses images/icons and fonts from
